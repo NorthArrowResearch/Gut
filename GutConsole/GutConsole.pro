@@ -22,14 +22,6 @@ SOURCES += main.cpp \
 HEADERS += \
     gutengine.h
 
-INCLUDEPATH += $$PWD/../Gut
-DEPENDPATH += $$PWD/../Gut
-INCLUDEPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
-DEPENDPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
-message($$INCLUDEPATH)
-LIBS += -L$$DESTDIR -lRasterManager
-
-
 CONFIG(release, debug|release): BUILD_TYPE = release
 else:CONFIG(debug, debug|release): BUILD_TYPE = debug
 
@@ -82,10 +74,14 @@ unix:!macx {
 }
 
 # Tell it where to find compiled RasterManager.dll
+INCLUDEPATH += $$PWD/../Gut
+DEPENDPATH += $$PWD/../Gut
+INCLUDEPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
+DEPENDPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
 LIBS += -L$$DESTDIR -lRasterManager
-LIBS += -L$$DESTDIR -lRaster2PNG
-LIBS += -L$$DESTDIR -lGut
+#LIBS += -L$$DESTDIR -lRaster2PNG
+LIBS += -L$$DESTDIR -lGutCore
 message("Building to: $$DESTDIR")
-
+message("Libs: $$LIBS")
 
 

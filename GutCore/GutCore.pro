@@ -7,7 +7,7 @@
 QT       += xml core
 QT       -= gui
 
-TARGET = Gut
+TARGET = GutCore
 TARGET_EXT = .dll # prevent version suffix on dll
 TEMPLATE = lib
 
@@ -18,17 +18,19 @@ DEFINES += MINRASTERMAN=\\\"6.1.6\\\" # Minimum Version of GDAL we need
 
 DEFINES += GUT_LIBRARY
 
-SOURCES += gut.cpp \
-    xmlfile.cpp \
-    gutraster.cpp \
-    gut_interface.cpp
+SOURCES += \
+    gut_interface.cpp \
+    gut_site.cpp \
+    gut_xmlfile.cpp \
+    gut_raster.cpp
 
-HEADERS += gut.h\
+HEADERS +=\
         gut_global.h \
     gut_exception.h \
-    xmlfile.h \
-    gutraster.h \
-    gut_interface.h
+    gut_interface.h \
+    gut_site.h \
+    gut_raster.h \
+    gut_xmlfile.h
 
 INCLUDEPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
 DEPENDPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager

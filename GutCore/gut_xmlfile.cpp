@@ -8,7 +8,7 @@
 
 #include "gut_exception.h"
 
-namespace HabitatModel{
+namespace Gut{
 
 QString sTmpPrefix = "_TMP_OUT_";
 
@@ -22,9 +22,9 @@ XMLFile::XMLFile(QString sXmlFile, bool bInput)
 
     //Something is wrong. Throw an exception
     else if (bInput && !QFile(sXmlFile).exists())
-        throw HabitatException(FILE_NOT_FOUND, sXmlFile);
+        throw GutException(FILE_NOT_FOUND, sXmlFile);
     else
-        throw HabitatException(FILE_PRESENT, sXmlFile);
+        throw GutException(FILE_PRESENT, sXmlFile);
 }
 
 XMLFile::~XMLFile(){
@@ -49,19 +49,19 @@ XMLFile::~XMLFile(){
 void XMLFile::Load(QString &sFilePath)
 {
     if (sFilePath.isEmpty() || sFilePath.isNull())
-        throw HabitatException(FILE_NOT_FOUND, "Filepath was empty");
+        throw GutException(FILE_NOT_FOUND, "Filepath was empty");
     else
         if (!QFile::exists(sFilePath))
-            throw HabitatException(FILE_NOT_FOUND, sFilePath);
+            throw GutException(FILE_NOT_FOUND, sFilePath);
 
     m_pDoc = new QDomDocument;
     m_xmlFile = new QFile(sFilePath);
     if (!m_xmlFile->open(QIODevice::ReadOnly))
-        throw HabitatException(FILE_READ_ONLY, sFilePath);
+        throw GutException(FILE_READ_ONLY, sFilePath);
 
     if (!m_pDoc->setContent(m_xmlFile->readAll())) {
         m_xmlFile->close();
-        throw HabitatException(DOM_LOAD_ERROR, sFilePath);
+        throw GutException(DOM_LOAD_ERROR, sFilePath);
     }
 }
 

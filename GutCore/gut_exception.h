@@ -11,6 +11,8 @@ enum GutOutputCodes {
     , INPUT_FILE_TRANSFORM_ERROR
     , INPUT_FILE_NOT_VALID
 
+    , FILE_NOT_FOUND
+    , FILE_PRESENT
     , PATH_ERROR
 
     , OUTPUT_FILE_MISSING
@@ -101,6 +103,12 @@ public:
         case PATH_ERROR:
             return "File Path Error";
             break;
+
+        case FILE_NOT_FOUND:
+            return "Could not locate file";
+
+        case FILE_PRESENT:
+            return "File was present and should not have been";
 
         case GDALVERSION:
             return "Insufficient GDAL version detected.";

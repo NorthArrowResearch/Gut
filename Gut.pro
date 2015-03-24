@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    GutConsole \
-    Gut
+    GutCore \
+    GutConsole
