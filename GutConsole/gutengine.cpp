@@ -3,7 +3,7 @@
 #include "gut_interface.h"
 #include "rastermanager_exception.h"
 #include "rastermanager_interface.h"
-#include "gut_site.h"
+#include "gut.h"
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
@@ -43,68 +43,29 @@ void GutEngine::CheckGutVersion(){
 
 int GutEngine::Run(int argc, char *argv[])
 {
+    // Initialize GDAL drivers
+    GDALAllRegister();
 
     int eResult = Gut::PROCESS_OK;
-    if (argc == 2)
-    {
-        eResult = GutRun(argc, argv);
-        return eResult;
-    }
     if (argc == 5)
     {
-        eResult = GutInit(argc, argv);
-        return eResult;
+        return Gut::RunGut(argv[1]);
     }
     else{
         std::cout << "\n Geomorphic Utilization Tool v"<<EXEVERSION;
-        std::cout << "\n    Initializing: gut init <root_project_path> <xml_input_def_file_path> <xml_input_conf_file_path> <xml_output_file_path>";
-        std::cout << "\n ";
-        std::cout << "\n        Arguments:";
-        std::cout << "\n                  root_project_path: Absolute full path to existing project folder.";
-        std::cout << "\n            xml_input_def_file_path: Absolute full path to existing xml definitions file.";
-        std::cout << "\n           xml_input_conf_file_path: Absolute full path to existing xml configuration file.";
-        std::cout << "\n               xml_output_file_path: Absolute full path to desired xml output file.";
-        std::cout << "\n ";
-        std::cout << "\n    Running: gut <xml_input_file_path>";
+        std::cout << "\n    Usage: gut <xml_input_file_path>";
         std::cout << "\n ";
         std::cout << "\n         Arguments:";
         std::cout << "\n                xml_input_file_path: Absolute full path to existing xml gut file.";
         std::cout << "\n";
         return eResult;
     }
-}
-
-int GutEngine::GutInit(int argc, char *argv[])
-{
-    int eResult = Gut::PROCESS_OK;
-
-    // Initialize GDAL drivers
-    GDALAllRegister();
-
-    Gut::Site theSite(argv[1], argv[2], argv[3], argv[4]);
-    eResult = theSite.Init();
 
     // De-initialize all GDAL drivers.
     GDALDestroyDriverManager();
 
-    return eResult;
 }
 
-
-int GutEngine::GutRun(int argc, char *argv[])
-{
-    int eResult = Gut::PROCESS_OK;
-
-    // Initialize GDAL drivers
-    GDALAllRegister();
-    Gut::Site theSite(argv[1], argv[2], argv[3], argv[4]);
-    eResult = theSite.Run();
-
-    // De-initialize all GDAL drivers.
-    GDALDestroyDriverManager();
-
-    return eResult;
-}
 
 
 

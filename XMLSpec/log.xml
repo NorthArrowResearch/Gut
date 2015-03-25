@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<log>
+  <metadata>
+      <tool>gut</tool>
+      <version>1.0.1</version>
+      <created>
+          <date>2015-02-17 11:10:08 AM</date>
+      </created>
+  </metadata>
+  <messages>
+    <message indent="0" severity="0" timestamp="2015-02-19T16:34:14">
+      <description>This is a description of what happened</description>
+    </message>
+    <message indent="0" severity="2" timestamp="2015-02-19T16:34:14">
+      <description>This is a description of what happened</description>
+      <exception>This is the exception</exception>
+    </message>
+  </messages>
+  <status>
+      <Project id="GutInit" value="Initialized" time="0" timestamp="2015-02-19T16:34:14"/>
+      <Project id="GutRun" value="Loaded" time="0" timestamp="2015-02-19T16:34:14"/>
+      <Raster id="SomeIntermediateOperation" value="Initialized" time="0" timestamp="2015-02-19T16:34:14"/>
+  </status>
+</log>

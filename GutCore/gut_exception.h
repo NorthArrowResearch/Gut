@@ -10,16 +10,20 @@ enum GutOutputCodes {
     , INPUT_FILE_ERROR
     , INPUT_FILE_TRANSFORM_ERROR
     , INPUT_FILE_NOT_VALID
-
+    , INPUT_FILE_CANNOT_BE_MADE
     , FILE_NOT_FOUND
     , FILE_PRESENT
     , PATH_ERROR
+    , FILE_WRITE_ERROR
 
     , OUTPUT_FILE_MISSING
     , OUTPUT_FILE_ERROR
     , OUTPUT_NO_DATA_ERROR
     , OUTPUT_FILE_EXT_ERROR
     , OUTPUT_UNHANDLED_DRIVER
+
+    , DOM_LOAD_ERROR
+    , FILE_READ_ONLY
 
     , GDALVERSION
     , RASTERMAN_VERSION
@@ -109,6 +113,9 @@ public:
 
         case FILE_PRESENT:
             return "File was present and should not have been";
+
+        case INPUT_FILE_CANNOT_BE_MADE:
+            return "File cannot be derived. It must be passed in as an input.";
 
         case GDALVERSION:
             return "Insufficient GDAL version detected.";

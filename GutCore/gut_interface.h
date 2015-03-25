@@ -36,13 +36,15 @@ enum EvidenceRaster{
     MR_PLANAR_RUNGLIDE,
     MR_HILLSLOPE,
     MR_CUTBANK,
-    MR_CHANNEL_MARGIN
+    MR_CHANNEL_MARGIN,
+
+    // Means raster type not set.
+    ER_NONE
 
 };
 
 extern "C" DLL_API const char * GetLibVersion();
-extern "C" DLL_API int GutRun(const char * psXMLFile);
-extern "C" DLL_API int GutInit(const char * psXMLFile);
+extern "C" DLL_API int RunGut(const char * psXMLFile);
 extern "C" DLL_API void GetReturnCodeAsString(unsigned int eErrorCode, char * sErr, unsigned int iBufferSize);
 
 }

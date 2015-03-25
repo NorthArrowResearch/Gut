@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<results>
+  <metadata>
+      <tool>gut</tool>
+      <version>1.0.1</version>
+      <created>
+          <date>2015-02-17 11:10:08 AM</date>
+      </created>
+  </metadata>
+  <results>
+    <paramname1 units="m">value</paramname1>
+    <paramname2 units="m">value</paramname2>
+    <paramname3 units="m">value</paramname3>
+    <vector>c:\path\to\vector.shp</vector>
+    <raster>c:\path\to\raster.tif</raster>
+    <log>c:\path\to\vector.tif</log>
+    <intermediate_rasters>
+      <raster>
+        <path>inputs/bankfull.tif</path>
+        <type>BankFull</type>
+      </raster>
+      <raster>
+        <path>inputs/Detrended.tif</path>
+        <type>Detrended</type>
+      </raster>
+      <raster>
+        <path>inputs/path.tif</path>
+        <type>WaterExtent</type>
+      </raster>
+      <raster>
+        <path>inputs/DEM.tif</path>
+        <type>DEM</type>
+      </raster>
+    </intermediate_rasters>
+    <channel_segments>
+      <segment>
+        <channel_units>
+          <unit>
+            <unit_number>1</unit_number>
+            <tier1>Fast-NonTurbulent/Glide</tier1>
+            <tier2>Fast-NonTurbulent/Glide</tier2>
+            <area>28.68</area>
+            <volume>3.6693</volume>
+            <polygon_area>30.14865</polygon_area>
+            <max_depth>0.28052</max_depth>
+            <depth_thalweg_exit>0.19543</depth_thalweg_exit>
+            <residual_depth>0.08508</residual_depth>
+          </unit>
+        </channel_units>
+      </segment>
+    <habitat_summary>
+      <tier1>
+        <unit>
+          <name>Fast-NonTurbulent/Glide</name>
+          <area>112.02</area>
+          <volume>11.40877</volume>
+          <count>4</count>
+          <spacing>29.99509</spacing>
+          <frequency>3.33388</frequency>
+          <percent>31.55923</percent>
+          <avg_max_depth>0.20687</avg_max_depth>
+          <avg_depth_thalweg_exit>0.17126</avg_depth_thalweg_exit>
+          <avg_residual_depth>0.0356</avg_residual_depth>
+        </unit>
+      </tier1>
+      <tier2>
+        <unit>
+          <name>someotherunit</name>
+          <area>112.02</area>
+          <volume>11.40877</volume>
+          <count>4</count>
+          <spacing>29.99509</spacing>
+          <frequency>3.33388</frequency>
+          <percent>31.55923</percent>
+          <avg_max_depth>0.20687</avg_max_depth>
+          <avg_depth_thalweg_exit>0.17126</avg_depth_thalweg_exit>
+          <avg_residual_depth>0.0356</avg_residual_depth>
+        </unit>
+      </tier2>
+    </habitat_summary>
+  </results>
+</results>

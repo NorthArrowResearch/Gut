@@ -56,13 +56,14 @@ public:
     void CopyTmpToOutput();
     void Init(QString &sFilePath);
     void AddMeta(QString sTagName, QString sTagValue);
-//    void AddResult(GutRun *logSim, QString sTagName, QString sTagValue);
     QString GetTmpFileName(QString xmlOutputFile);
     void Log(QString sMsg, QString sException, int nSeverity, int indent);
-//    void QueueStatus(QString sID, StatusCode nCode, StatusType nType, int nTime);
-//    void AddStatus(QString sID, StatusCode nCode, StatusType nType, int nTime);
+    void QueueStatus(QString sID, StatusCode nCode, StatusType nType, int nTime);
+    void AddStatus(QString sID, StatusCode nCode, StatusType nType, int nTime);
     void WriteDomToFile();
 
+
+    void AddResult(QString sTagName, QString sTagValue);
 private:
 
     QFile * m_xmlFile;

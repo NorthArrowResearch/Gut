@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gut>
+  <metadata>
+      <tool>gut</tool>
+      <version>1.0.1</version>
+      <created>
+          <date>2015-02-17 11:10:08 AM</date>
+      </created>
+  </metadata>
+  <visit>
+      <name>CBW05583-254415</name>
+      <outputs>
+        <dir>c:\some\dir</dir>
+        <log>c:\some\dir\CBW05583-254415-log.xml</log>
+        <results>c:\some\dir\CBW05583-254415-results.xml</results>
+      </outputs>
+      <params>
+        <param>
+          <type>double</type>
+          <name>Water Level</name>
+          <value>2.52</value>
+        </param>
+        <param>
+          <type>int</type>
+          <name>SomeOtherParam</name>
+          <value>4</value>
+        </param>
+      </params>
+      <inputs>
+        <raster>
+          <type>bankfull</type>
+          <path>c:\path\to\inputs\bankfull.tif</path>
+        </raster>
+        <raster>
+          <type>detrended</type>
+          <path>c:\path\to\inputs\Detrended.tif</path>
+        </raster>
+        <raster>
+          <type>waterextent</type>
+          <path>c:\path\to\inputs\path.tif</path>
+        </raster>
+        <raster>
+          <type>dem</type>
+          <path>c:\path\to\inputs\DEM.tif</path>
+        </raster>
+      </inputs>   
+  </visit>
+</gut>

@@ -1,45 +1,23 @@
 #define MY_DLL_EXPORT
 
+#include "gut.h"
 #include "gut_interface.h"
 #include "gut_exception.h"
 #include "gut_global.h"
-#include "gut_site.h"
 
 namespace Gut{
 
 DLL_API const char * GetLibVersion(){ return LIBVERSION; }
 
-extern "C" DLL_API int GutInit(const char * psXMLFile, const char * psDEMFile){
+extern "C" DLL_API int RunGut(const char * psXMLFile){
     int eResult = PROCESS_OK;
     try{
-        Site theSite(psXMLFile, psDEMFile, psDEMFile, psDEMFile);
-        eResult = theSite.Init();
+        GutRun theGutRun(psXMLFile);
+        eResult = theGutRun.Run();
     }
     catch (GutException& e){
-        const QByteArray qbErr = e.GetReturnMsgAsString().toLocal8Bit();
-        const char * pHabErr = qbErr.data();
-        strncpy(sErr, pHabErr, iBufferSize);
-        sErr[ iBufferSize - 1 ] = 0;
-        return e.GetErrorCode();
-    }
-    catch (std::exception& e){
-        eResult = OTHER_ERROR;
-    }
-
-    return eResult;
-}
-
-extern "C" DLL_API int GutRun(const char * psXMLFile){
-    int eResult = PROCESS_OK;
-    try{
-        Site theSite(psXMLFile, psXMLFile, psXMLFile, psXMLFile);
-        eResult = theSite.Run();
-    }
-    catch (GutException& e){
-        const QByteArray qbErr = e.GetReturnMsgAsString().toLocal8Bit();
-        const char * pHabErr = qbErr.data();
-        strncpy(sErr, pHabErr, iBufferSize);
-        sErr[ iBufferSize - 1 ] = 0;
+        // At this point there's no XML file loaded so we need to just
+        // return an error code
         return e.GetErrorCode();
     }
     catch (std::exception& e){

@@ -15,9 +15,6 @@ private:
     void CheckRasterManVersion();
     void CheckGutVersion();
 
-    int GutInit(int argc, char *argv[]);
-    int GutRun(int argc, char *argv[]);
-
 };
 
 }

@@ -20,17 +20,17 @@ DEFINES += GUT_LIBRARY
 
 SOURCES += \
     gut_interface.cpp \
-    gut_site.cpp \
     gut_xmlfile.cpp \
-    gut_raster.cpp
+    gut_raster.cpp \
+    gut.cpp
 
 HEADERS +=\
         gut_global.h \
     gut_exception.h \
     gut_interface.h \
-    gut_site.h \
     gut_raster.h \
-    gut_xmlfile.h
+    gut_xmlfile.h \
+    gut.h
 
 INCLUDEPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
 DEPENDPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager

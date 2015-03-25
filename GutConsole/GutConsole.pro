@@ -74,8 +74,8 @@ unix:!macx {
 }
 
 # Tell it where to find compiled RasterManager.dll
-INCLUDEPATH += $$PWD/../Gut
-DEPENDPATH += $$PWD/../Gut
+INCLUDEPATH += $$PWD/../GutCore
+DEPENDPATH += $$PWD/../GutCore
 INCLUDEPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
 DEPENDPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
 LIBS += -L$$DESTDIR -lRasterManager

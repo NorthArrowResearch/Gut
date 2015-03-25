@@ -1,5 +1,6 @@
-#include "xmlfile.h"
+#include "gut_xmlfile.h"
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QTextStream>
 #include <QDateTime>
@@ -65,7 +66,6 @@ void XMLFile::Load(QString &sFilePath)
     }
 }
 
-
 void XMLFile::CopyTmpToOutput(){
     try{
         if (QFile::exists(m_sXMLFilePath))
@@ -115,7 +115,7 @@ void XMLFile::Init(QString &sFilePath){
 
     /*open a file */
     if (!m_xmlFile->open(QIODevice::WriteOnly))
-        throw HabitatException(FILE_READ_ONLY, m_xmlFile->fileName());
+        throw GutException(FILE_READ_ONLY, m_xmlFile->fileName());
     else
     {
 
@@ -164,56 +164,56 @@ void XMLFile::AddMeta(QString sTagName, QString sTagValue){
     WriteDomToFile();
 }
 
-void XMLFile::AddResult(Simulation * logSim, QString sTagName, QString sTagValue){
-    QDomElement report_data, sim_data, tagresult, report_data_tag;
-    QDomElement documentElement = m_pDoc->documentElement();
+void XMLFile::AddResult(QString sTagName, QString sTagValue){
+//    QDomElement report_data, sim_data, tagresult, report_data_tag;
+//    QDomElement documentElement = m_pDoc->documentElement();
 
-    int nSimID = logSim->GetID();
-    QString simName = logSim->GetName();
+//    int nSimID = logSim->GetID();
+//    QString simName = logSim->GetName();
 
-    // First search for (create if necessary) a results.
-    QDomNodeList reportEl = documentElement.elementsByTagName( "results" );
+//    // First search for (create if necessary) a results.
+//    QDomNodeList reportEl = documentElement.elementsByTagName( "results" );
 
-    if( reportEl.size() == 0 )
-    {
-      report_data = m_pDoc->createElement( "results" );
-      documentElement.insertBefore( report_data, documentElement );
-    }
-    else if( reportEl.size() == 1 )
-    {
-      report_data = reportEl.at(0).toElement();
-    }
+//    if( reportEl.size() == 0 )
+//    {
+//      report_data = m_pDoc->createElement( "results" );
+//      documentElement.insertBefore( report_data, documentElement );
+//    }
+//    else if( reportEl.size() == 1 )
+//    {
+//      report_data = reportEl.at(0).toElement();
+//    }
 
-    // Create the simulation node if it doesn't already exist
-    QDomNodeList simEl = report_data.childNodes();
-    QDomText sMsgTxt = m_pDoc->createTextNode(sTagValue.toHtmlEscaped());
+//    // Create the simulation node if it doesn't already exist
+//    QDomNodeList simEl = report_data.childNodes();
+//    QDomText sMsgTxt = m_pDoc->createTextNode(sTagValue.toHtmlEscaped());
 
-    bool bFound = false;
-    for(int n= 0; n < simEl.length(); n++){
-        QDomElement elSimulation = simEl.at(n).toElement();
+//    bool bFound = false;
+//    for(int n= 0; n < simEl.length(); n++){
+//        QDomElement elSimulation = simEl.at(n).toElement();
 
-        QString sSimID = QString::number(nSimID);
-        QString simAttrID = elSimulation.attribute("id");
+//        QString sSimID = QString::number(nSimID);
+//        QString simAttrID = elSimulation.attribute("id");
 
-        if (elSimulation.hasAttribute("id") && simAttrID.compare(sSimID, Qt::CaseInsensitive) == 0){
-            sim_data = elSimulation;
-            bFound = true;
-        }
-    }
+//        if (elSimulation.hasAttribute("id") && simAttrID.compare(sSimID, Qt::CaseInsensitive) == 0){
+//            sim_data = elSimulation;
+//            bFound = true;
+//        }
+//    }
 
-    if( !bFound )
-    {
-      sim_data = m_pDoc->createElement( "simulation" );
-      sim_data.setAttribute("id", QString::number(nSimID));
-      sim_data.setAttribute("name", simName);
-      report_data.appendChild(sim_data);
-    }
+//    if( !bFound )
+//    {
+//      sim_data = m_pDoc->createElement( "simulation" );
+//      sim_data.setAttribute("id", QString::number(nSimID));
+//      sim_data.setAttribute("name", simName);
+//      report_data.appendChild(sim_data);
+//    }
 
-    // Create the message itself
-    tagresult = m_pDoc->createElement( sTagName );
-    tagresult.appendChild(sMsgTxt);
-    tagresult.appendChild( report_data_tag );
-    sim_data.appendChild(tagresult);
+//    // Create the message itself
+//    tagresult = m_pDoc->createElement( sTagName );
+//    tagresult.appendChild(sMsgTxt);
+//    tagresult.appendChild( report_data_tag );
+//    sim_data.appendChild(tagresult);
 
     WriteDomToFile();
 
@@ -331,7 +331,7 @@ void XMLFile::WriteDomToFile(){
     while ( !m_xmlFile->open( QIODevice::WriteOnly | QIODevice::Text ) ){
         n++;
         if (n >= 100)
-            throw HabitatException(FILE_WRITE_ERROR,  m_xmlFile->fileName());
+            throw GutException(FILE_WRITE_ERROR,  m_xmlFile->fileName());
         mySleep(50);
     }
 
