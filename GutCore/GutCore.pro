@@ -32,10 +32,6 @@ HEADERS +=\
     gut_xmlfile.h \
     gut.h
 
-INCLUDEPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
-DEPENDPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
-LIBS += -L$$DESTDIR -lRasterManager
-
 CONFIG(release, debug|release): BUILD_TYPE = release
 else:CONFIG(debug, debug|release): BUILD_TYPE = debug
 
@@ -87,5 +83,9 @@ unix:!macx {
     INCLUDEPATH += /usr/include/gdal
     DEPENDPATH  += /usr/include/gdal
 }
+
+INCLUDEPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
+DEPENDPATH += $$PWD/../../../RasterManager/rastermanager/RasterManager
+LIBS += -L$$DESTDIR -lRasterManager
 
 message("Building to: $$DESTDIR")

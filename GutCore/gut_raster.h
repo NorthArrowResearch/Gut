@@ -1,6 +1,7 @@
 #ifndef GUTRASTER_H
 #define GUTRASTER_H
 #include "raster.h"
+#include "rastermanager_interface.h"
 #include "gut_interface.h"
 
 namespace Gut{
@@ -9,8 +10,10 @@ class GutRaster
 {
 public:
     GutRaster(EvidenceRaster eRasterType);
-    GutRaster(EvidenceRaster eRasterType, QString sFilename);
+    GutRaster(EvidenceRaster eRasterType, const char *sFilename);
     ~GutRaster();
+
+    void Init(EvidenceRaster eRasterType);
 
     int CreateBaseRaster(EvidenceRaster eRasterType);
     int CreateNormalizedRaster(){
@@ -27,6 +30,8 @@ public:
         return m_NormRaster;
     }
     inline bool IsInUse(){ return m_bInUse; }
+
+    void CreateFileName();
 
     inline int CreateBaseRaster()
     {
@@ -105,7 +110,11 @@ public:
         return PROCESS_OK;
     }
 
+    QString GetOutputPath(QString sPathPrefix);
+
+
 private:
+    // Each function runs the Rasterman Tasks Necessary to create a raster
     int CreateChannelMask();
     int CreateSlope();
     int CreateMeanDetrendedSlope();

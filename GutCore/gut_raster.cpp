@@ -2,29 +2,43 @@
 
 namespace Gut{
 
-GutRaster::GutRaster(EvidenceRaster eRasterType, QString sFilename){
-
+GutRaster::GutRaster(EvidenceRaster eRasterType, const char * sFilename){
+    Init(eRasterType);
+    m_RasterPath = QString(sFilename);
+    m_BaseRaster = new RasterManager::Raster(sFilename);
 }
 
-GutRaster::~GutRaster()
-{
-
+GutRaster::GutRaster(EvidenceRaster eRasterType){
+    Init(eRasterType);
 }
 
-GutRaster::GutRaster(EvidenceRaster eRasterType)
-{
+void GutRaster::Init(EvidenceRaster eRasterType){
+    m_RasterType = eRasterType;
     m_RasterParent = NULL;
     m_NormRaster = NULL;
     m_BaseRaster = NULL;
     m_bInUse = true;
-    m_RasterType = eRasterType;
+}
+
+GutRaster::~GutRaster()
+{
+    if (m_BaseRaster != NULL)
+        delete m_BaseRaster;
+    if (m_NormRaster != NULL)
+        delete m_NormRaster;
+}
+
+QString GutRaster::GetOutputPath(QString sPathPrefix){
+    return "";
 }
 
 int GutRaster::CreateChannelMask(){
     return PROCESS_OK;
 }
 int GutRaster::CreateSlope(){
-    return PROCESS_OK;
+    m_RasterPath = GetOutputPath("INT_Slope-");
+    const QByteArray psFilename = m_RasterPath.toLocal8Bit();
+    return RasterManager::CreateSlope(psFilename.data(), psFilename.data(), RasterManager::SLOPE_DEGREES);
 }
 int GutRaster::CreateMeanDetrendedSlope(){
     return PROCESS_OK;
