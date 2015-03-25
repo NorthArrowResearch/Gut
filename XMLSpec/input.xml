@@ -16,12 +16,10 @@
       </outputs>
       <params>
         <param>
-          <type>double</type>
           <name>Water Level</name>
           <value>2.52</value>
         </param>
         <param>
-          <type>int</type>
           <name>SomeOtherParam</name>
           <value>4</value>
         </param>
