@@ -11,8 +11,8 @@
       <name>CBW05583-254415</name>
       <outputs>
         <dir>c:\some\dir</dir>
-        <log>c:\some\dir\CBW05583-254415-log.xml</log>
-        <results>c:\some\dir\CBW05583-254415-results.xml</results>
+        <log>CBW05583-254415-log.xml</log>
+        <results>CBW05583-254415-results.xml</results>
       </outputs>
       <params>
         <param>
