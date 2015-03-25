@@ -7,10 +7,17 @@
           <date>2015-02-17 11:10:08 AM</date>
       </created>
   </metadata>
+   <params>
+        <param>
+          <name>Water Level</name>
+          <value>2.52</value>
+        </param>
+        <param>
+          <name>SomeOtherParam</name>
+          <value>4</value>
+        </param>
+      </params>
   <results>
-    <paramname1 units="m">value</paramname1>
-    <paramname2 units="m">value</paramname2>
-    <paramname3 units="m">value</paramname3>
     <vector>c:\path\to\vector.shp</vector>
     <raster>c:\path\to\raster.tif</raster>
     <log>c:\path\to\vector.tif</log>
