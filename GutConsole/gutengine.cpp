@@ -52,7 +52,9 @@ int GutEngine::Run(int argc, char *argv[])
     int eResult = Gut::PROCESS_OK;
     if (argc == 2)
     {
-        return GutRun::Instance(argv[1])->Run();
+        GutRun * theRun = GutRun::Instance();
+        theRun->Init(argv[1]);
+        return theRun->Run();
     }
     else{
         std::cout << "\n Geomorphic Utilization Tool v"<<EXEVERSION;

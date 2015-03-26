@@ -10,20 +10,17 @@ namespace Gut{
 GutRun * GutRun::m_pInstance = NULL;
 /* --------------------------------------------------------------- */
 
-GutRun * GutRun::Instance(const char * psXMLInput)
+GutRun *GutRun::Instance()
 {
-   if (!m_pInstance)   // Only allow one instance of class to be generated.
-      m_pInstance = new GutRun(psXMLInput);
+    if (!m_pInstance)   // Only allow one instance of class to be generated.
+       m_pInstance = new GutRun();
 
-   return m_pInstance;
+    return m_pInstance;
 }
 
-GutRun::GutRun(const char * psXMLInput)
+void GutRun::Init(const char * psXMLInput)
 {
-    m_XML_Results = NULL;
-    m_XML_Logs = NULL;
     m_XML_Inputs = new XMLFile(psXMLInput, INPUT_FILE);
-
     m_elConf = m_XML_Inputs->Document();
 
     // First thing first: we need to get the log file location and the
@@ -40,6 +37,18 @@ GutRun::GutRun(const char * psXMLInput)
     m_XML_Results = new XMLFile(qdOutputDir.filePath(sResults), RESULTS_FILE);
     m_XML_Logs = new XMLFile(qdOutputDir.filePath(sLog), LOG_FILE);
 
+}
+
+void GutRun::InitCheck(){
+    if (m_XML_Inputs == NULL)
+        throw GutException(INIT_ERROR);
+}
+
+GutRun::GutRun()
+{
+    m_XML_Results = NULL;
+    m_XML_Logs = NULL;
+    m_XML_Inputs = NULL;
 }
 
 
@@ -137,11 +146,21 @@ QString GutRun::BaseFileNameAppend(QString sFullFilePath, QString sAppendStr){
 GutRaster * GutRun::GetRaster(EvidenceRaster eRasterType)
 {
     // Go into the raster store and get the raster we want
-    return m_RasterStore.find(eRasterType).value();
+    // If it's not there then make it.
+    GutRaster * theRaster;
+    if (!m_RasterStore.contains(eRasterType)){
+        theRaster =  new GutRaster(eRasterType);
+        m_RasterStore.insert(eRasterType, theRaster);
+    }
+    else{
+        theRaster = m_RasterStore.find(eRasterType).value();
+    }
+    return theRaster;
 }
 
 int GutRun::Run()
 {
+    InitCheck();
     LoadSourceRasters();
     MakeEvidenceRasters();
     return PROCESS_OK;
@@ -149,7 +168,7 @@ int GutRun::Run()
 
 void GutRun::LoadSourceRasters(){
 
-    // Start with the original 4 Rasters.
+    // Kick-Start the process with the original 4 Rasters we can't derive.
     m_RasterStore.insert(OR_DEM, new GutRaster(OR_DEM,  GetSourceRasterPath("dem") ) );
     m_RasterStore.insert(OR_WATER_EXTENT, new GutRaster(OR_WATER_EXTENT, GetSourceRasterPath("waterextent") ) );
     m_RasterStore.insert(OR_BANKFULL, new GutRaster(OR_BANKFULL, GetSourceRasterPath("bankfull") ) );
@@ -158,19 +177,18 @@ void GutRun::LoadSourceRasters(){
 
 void GutRun::MakeEvidenceRasters(){
 
-    // The middle rasters are created automatically.
-
-    // Generate the evidence Rasters one-by-one
-//    m_RasterStore.insert(MR_CONCAVITY, new GutRaster(MR_CONCAVITY));
-//    m_RasterStore.insert(MR_CONVEXITY, new GutRaster(MR_CONVEXITY));
-    m_RasterStore.insert(MR_ACTIVE_FLOODPLAIN, new GutRaster(MR_ACTIVE_FLOODPLAIN));
-//    m_RasterStore.insert(MR_TERRACE, new GutRaster(MR_TERRACE));
-//    m_RasterStore.insert(MR_PLANAR_RAPID, new GutRaster(MR_PLANAR_RAPID));
-//    m_RasterStore.insert(MR_PLANAR_RUNGLIDE, new GutRaster(MR_PLANAR_RUNGLIDE));
-//    m_RasterStore.insert(MR_HILLSLOPE, new GutRaster(MR_HILLSLOPE));
-//    m_RasterStore.insert(MR_CUTBANK, new GutRaster(MR_CUTBANK));
-//    m_RasterStore.insert(MR_CHANNEL_MARGIN, new GutRaster(MR_CHANNEL_MARGIN));
-
+    // Generate the final evidence Rasters one-by-one
+    // NB: The intermediate rasters are created automatically.
+//    GetRaster(MR_CONCAVITY);
+//    GetRaster(MR_CONVEXITY);
+    GutRaster * activeflood = GetRaster(MR_ACTIVE_FLOODPLAIN);
+    RasterManager::Raster * someRaster = activeflood->GetBaseRaster();
+//    GetRaster(MR_TERRACE);
+//    GetRaster(MR_PLANAR_RAPID);
+//    GetRaster(MR_PLANAR_RUNGLIDE);
+//    GetRaster(MR_HILLSLOPE);
+//    GetRaster(MR_CUTBANK);
+//    GetRaster(MR_CHANNEL_MARGIN);
 }
 
 GutRun::~GutRun()

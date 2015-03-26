@@ -15,7 +15,8 @@ namespace Gut{
 
 class DLL_API GutRun{
 public:
-   static GutRun * Instance(const char * psXMLInput);
+   static GutRun * Instance();
+   void Init(const char *psXMLInput);
    /**
     * @brief Run gut on the XML file that has been passed in
     * @return
@@ -29,10 +30,14 @@ public:
     */
    GutRaster * GetRaster(EvidenceRaster eRasterType);
 
+   inline QString GetOutputDir(){ return qdOutputDir.absolutePath(); }
+   inline QString GetTempDir(){ return qdTempDir.absolutePath(); }
+
    static QString BaseFileNameAppend(QString sFullFilePath, QString sAppendStr);
 
+
 private:
-   GutRun(const char * psXMLInput);  // Private so that it can  not be called
+   GutRun();  // Private so that it can  not be called
    GutRun(GutRun const&){}            // copy constructor is private
    ~GutRun();
 
@@ -70,6 +75,7 @@ private:
    void LoadSourceRasters();
    QString GetSourceRasterPath(QString sType);
 
+   void InitCheck();
 };
 
 }

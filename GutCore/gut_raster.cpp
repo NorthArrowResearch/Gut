@@ -1,4 +1,5 @@
 #include "gut_raster.h"
+#include "gut.h"
 
 namespace Gut{
 
@@ -21,7 +22,7 @@ void GutRaster::Init(EvidenceRaster eRasterType){
     m_bInUse = true;
 }
 
-RasterManager::Raster *GutRaster::GetBaseRaster()
+RasterManager::Raster * GutRaster::GetBaseRaster()
 {
     if (m_BaseRaster == NULL)
         CreateBaseRaster();
@@ -43,8 +44,14 @@ GutRaster::~GutRaster()
         delete m_NormRaster;
 }
 
-QString GutRaster::GetOutputPath(QString sPathPrefix){
-    return "";
+QString GutRaster::CreateOutputRasterPath(QString sPathPrefix, QString sSuffix, bool bTmpDir){
+    QString sDir = "";
+    if (bTmpDir)
+        sDir = GutRun::Instance()->GetTempDir();
+    else
+        sDir = GutRun::Instance()->GetOutputDir();
+
+    return QDir(sDir).filePath(sPathPrefix + QString(".") + sSuffix );
 }
 
 // -------------------------------------------------------------------------------------------
@@ -55,7 +62,7 @@ int GutRaster::CreateChannelMask(){
     return PROCESS_OK;
 }
 int GutRaster::CreateSlope(){
-    m_RasterPath = GetOutputPath("INT_Slope-");
+    m_RasterPath = CreateOutputRasterPath("INT_Slope-", "tif", true);
     const QByteArray psFilename = m_RasterPath.toLocal8Bit();
     return RasterManager::CreateSlope(psFilename.data(), psFilename.data(), RasterManager::SLOPE_DEGREES);
 }
@@ -90,6 +97,13 @@ int GutRaster::CreateConvexity(){
     return PROCESS_OK;
 }
 int GutRaster::CreateActiveFloodPlain(){
+    RasterManager::Raster * rDetrended = GutRun::Instance()->GetRaster(OR_DEM)->GetBaseRaster();
+    m_RasterPath = CreateOutputRasterPath("ER-ActiveFloodPlain", "tif", false);
+    const QByteArray psFilename = m_RasterPath.toLocal8Bit();
+    int eResult = RasterManager::CreateSlope(rDetrended->FilePath(),
+                                      psFilename.data(),
+                                      RasterManager::SLOPE_DEGREES);
+
     return PROCESS_OK;
 }
 int GutRaster::CreateTerrace(){
@@ -110,5 +124,7 @@ int GutRaster::CreateCutBank(){
 int GutRaster::CreateChannelMargin(){
     return PROCESS_OK;
 }
+
+
 
 }

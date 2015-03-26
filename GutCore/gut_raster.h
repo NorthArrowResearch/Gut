@@ -51,18 +51,6 @@ public:
     inline bool IsInUse(){ return m_bInUse; }
 
     /**
-     * @brief CreateFileName
-     */
-    void CreateFileName();
-
-    /**
-     * @brief GetOutputPath
-     * @param sPathPrefix
-     * @return
-     */
-    QString GetOutputPath(QString sPathPrefix);
-
-    /**
      * @brief CreateBaseRaster just choosing which create function to run
      * @return
      */
@@ -175,6 +163,15 @@ private:
     GutRaster * m_RasterParent;
     RasterManager::Raster * m_BaseRaster;
     RasterManager::Raster * m_NormRaster;
+
+    /**
+     * @brief CreateOutputRasterPath
+     * @param sPathPrefix
+     * @param sSuffix
+     * @param bTmpDir
+     * @return
+     */
+    QString CreateOutputRasterPath(QString sPathPrefix, QString sSuffix, bool bTmpDir);
 };
 
 }

@@ -22,6 +22,7 @@ enum GutOutputCodes {
     , OUTPUT_FILE_EXT_ERROR
     , OUTPUT_UNHANDLED_DRIVER
 
+    , INIT_ERROR
     , DOM_LOAD_ERROR
     , FILE_READ_ONLY
 
@@ -120,6 +121,9 @@ public:
         case GDALVERSION:
             return "Insufficient GDAL version detected.";
             break;
+
+        case INIT_ERROR:
+            return "GutRun was called without first being initialized";
 
         default:
             return "Unhandled Raster Manager Error.";
