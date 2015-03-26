@@ -12,7 +12,7 @@ public:
 
     GutRaster(EvidenceRaster eRasterType);
 
-    GutRaster(EvidenceRaster eRasterType, const char *sFilename);
+    GutRaster(EvidenceRaster eRasterType, QString sFilename);
 
     ~GutRaster();
 

@@ -66,6 +66,10 @@ private:
    // These global params get read from the XML input file
    int param1;
    QString param2;
+   void MakeEvidenceRasters();
+   void LoadSourceRasters();
+   QString GetSourceRasterPath(QString sType);
+
 };
 
 }

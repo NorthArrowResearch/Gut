@@ -76,6 +76,52 @@ QString GutRun::GetInputParamText(QString containerName, QString tagName){
 }
 
 
+QString GutRun::GetSourceRasterPath(QString sType){
+
+    QDomNodeList elOutputContainer = m_elConf->elementsByTagName("inputs");
+    QString msg;
+
+    if (elOutputContainer.length() == 0){
+        msg = QString("Could not find <inputs> container within input xml file");
+        throw GutException(INPUT_FILE_ERROR, msg);
+    }
+    QDomNodeList elRasters = elOutputContainer.at(0).childNodes();
+
+    for(int n= 0; n < elRasters.length(); n++){
+        QDomElement elRaster = elRasters.at(n).toElement();
+
+        if (elRaster.tagName().compare("raster", Qt::CaseInsensitive) == 0){
+            QDomNodeList dlType = elRaster.elementsByTagName("type");
+            if (dlType.length() != 0){
+                QDomElement elType = dlType.at(0).toElement();
+                if (elType.text().compare(sType, Qt::CaseInsensitive) == 0){
+                    QDomNodeList dlPath = elRaster.elementsByTagName("path");
+                    if (dlPath.length() != 0){
+                        QDomElement elPath = dlPath.at(0).toElement();
+                        if (elPath.text().compare("", Qt::CaseInsensitive) == 0 || !QFileInfo(elPath.text()).exists()){
+                            msg = QString("raster: %1 does not exist at path: %2" )
+                                    .arg(sType).arg(elPath.text());
+                            throw GutException(INPUT_FILE_ERROR, msg);
+                        }
+                        return elPath.text();
+
+                    }
+                    else{
+                        msg = QString("<path> tage missing for raster: %1")
+                                .arg(sType);
+                        throw GutException(INPUT_FILE_ERROR, msg);
+                    }
+                }
+            }
+        }
+    }
+
+    msg = QString("Could not find path to raster: %1 input xml file")
+            .arg(sType);
+    throw GutException(INPUT_FILE_ERROR, msg);
+
+}
+
 QString GutRun::BaseFileNameAppend(QString sFullFilePath, QString sAppendStr){
 
     QFileInfo sNewFileInfo(sFullFilePath);
@@ -96,9 +142,35 @@ GutRaster * GutRun::GetRaster(EvidenceRaster eRasterType)
 
 int GutRun::Run()
 {
-
-    qDebug() << "asdfasDFASDFASDFASDFASDFASDFSA";
+    LoadSourceRasters();
+    MakeEvidenceRasters();
     return PROCESS_OK;
+}
+
+void GutRun::LoadSourceRasters(){
+
+    // Start with the original 4 Rasters.
+    m_RasterStore.insert(OR_DEM, new GutRaster(OR_DEM,  GetSourceRasterPath("dem") ) );
+    m_RasterStore.insert(OR_WATER_EXTENT, new GutRaster(OR_WATER_EXTENT, GetSourceRasterPath("waterextent") ) );
+    m_RasterStore.insert(OR_BANKFULL, new GutRaster(OR_BANKFULL, GetSourceRasterPath("bankfull") ) );
+    m_RasterStore.insert(OR_DETRENDED, new GutRaster(OR_DETRENDED, GetSourceRasterPath("detrended") ) );
+}
+
+void GutRun::MakeEvidenceRasters(){
+
+    // The middle rasters are created automatically.
+
+    // Generate the evidence Rasters one-by-one
+//    m_RasterStore.insert(MR_CONCAVITY, new GutRaster(MR_CONCAVITY));
+//    m_RasterStore.insert(MR_CONVEXITY, new GutRaster(MR_CONVEXITY));
+    m_RasterStore.insert(MR_ACTIVE_FLOODPLAIN, new GutRaster(MR_ACTIVE_FLOODPLAIN));
+//    m_RasterStore.insert(MR_TERRACE, new GutRaster(MR_TERRACE));
+//    m_RasterStore.insert(MR_PLANAR_RAPID, new GutRaster(MR_PLANAR_RAPID));
+//    m_RasterStore.insert(MR_PLANAR_RUNGLIDE, new GutRaster(MR_PLANAR_RUNGLIDE));
+//    m_RasterStore.insert(MR_HILLSLOPE, new GutRaster(MR_HILLSLOPE));
+//    m_RasterStore.insert(MR_CUTBANK, new GutRaster(MR_CUTBANK));
+//    m_RasterStore.insert(MR_CHANNEL_MARGIN, new GutRaster(MR_CHANNEL_MARGIN));
+
 }
 
 GutRun::~GutRun()

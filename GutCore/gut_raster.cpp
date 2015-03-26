@@ -2,10 +2,11 @@
 
 namespace Gut{
 
-GutRaster::GutRaster(EvidenceRaster eRasterType, const char * sFilename){
+GutRaster::GutRaster(EvidenceRaster eRasterType, QString sFilename){
     Init(eRasterType);
-    m_RasterPath = QString(sFilename);
-    m_BaseRaster = new RasterManager::Raster(sFilename);
+    m_RasterPath = sFilename;
+    const QByteArray qbFileName = sFilename.toLocal8Bit();
+    m_BaseRaster = new RasterManager::Raster(qbFileName.data());
 }
 
 GutRaster::GutRaster(EvidenceRaster eRasterType){
