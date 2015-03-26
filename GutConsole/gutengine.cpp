@@ -15,30 +15,33 @@ namespace Gut {
 
 GutEngine::GutEngine()
 {
-    CheckRasterManVersion();
-    CheckGutVersion();
+    // GDAL and RM versions are checked
+
+    // The C# needs an integer return but on the console we want to throw
+    // an error with a little more evidence.
+    QString sErr;
+
+    if (!Gut::CheckGDALVersion()){
+        sErr = QString("GDAL is: %1, and needs to be: %2")
+                .arg(GDALVersionInfo("RELEASE_NAME") ).arg(Gut::GetReqGDALVersion());
+        throw GutException(GDALVERSION, sErr);
+    }
+//    else if (!Gut::CheckRMVersion()){
+//        sErr = QString("Rasterman is: %1, and needs to be %2")
+//                .arg(RasterManager::GetLibVersion()).arg(Gut::GetReqRMVersion());
+//        throw GutException(RASTERMAN_VERSION, sErr);
+//    }
+//    else if (!CheckLibersion()){
+//        sErr = QString("Exe is at: %1, Library is at %2")
+//                .arg(EXEVERSION).arg(Gut::GetLibVersion());
+//        throw GutException(LIB_VERSION, sErr);
+//    }
+
 }
 
-void GutEngine::CheckRasterManVersion(){
 
-    QString sVersion = QString(EXEVERSION);
-    QString sLibVersion = QString(Gut::GetLibVersion());
-
-    if (sVersion.compare(sLibVersion, Qt::CaseInsensitive) != 0){
-        QString sErr = QString("Rasterman is at: %1, and needs to be %2").arg(sVersion).arg(sLibVersion);
-        throw Gut::GutException(RASTERMAN_VERSION, sErr);
-    }
-}
-
-void GutEngine::CheckGutVersion(){
-
-    QString sVersion = QString(EXEVERSION);
-    QString sLibVersion = QString(RasterManager::GetLibVersion());
-
-    if (sVersion.compare(sLibVersion, Qt::CaseInsensitive) != 0){
-        QString sErr = QString("Gut Exe is at: %1, Library is at %2").arg(sVersion).arg(sLibVersion);
-        throw RasterManager::RasterManagerException(RASTERMAN_VERSION, sErr);
-    }
+bool GutEngine::CheckLibersion(){
+    return QString(EXEVERSION).compare(Gut::GetLibVersion(), Qt::CaseInsensitive) == 0;
 }
 
 int GutEngine::Run(int argc, char *argv[])
@@ -47,9 +50,9 @@ int GutEngine::Run(int argc, char *argv[])
     GDALAllRegister();
 
     int eResult = Gut::PROCESS_OK;
-    if (argc == 5)
+    if (argc == 2)
     {
-        return Gut::RunGut(argv[1]);
+        return GutRun::Instance(argv[1])->Run();
     }
     else{
         std::cout << "\n Geomorphic Utilization Tool v"<<EXEVERSION;

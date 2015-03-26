@@ -14,6 +14,12 @@ enum XML_LOG_SEVERITY {
     SEVERITY_VERBOSE = 3,
 };
 
+enum XMLFileType{
+    INPUT_FILE,
+    RESULTS_FILE,
+    LOG_FILE
+};
+
 enum StatusCode {
     STATUS_INITIALIZED
     , STATUES_LOADED
@@ -50,11 +56,10 @@ class XMLFile
 public:
 
     XMLFile();
-    XMLFile(QString sXmlFile, bool bInput);
+    XMLFile(QString sXmlFile, XMLFileType bInput);
     ~XMLFile();
     void Load(QString &sFilePath);
     void CopyTmpToOutput();
-    void Init(QString &sFilePath);
     void AddMeta(QString sTagName, QString sTagValue);
     QString GetTmpFileName(QString xmlOutputFile);
     void Log(QString sMsg, QString sException, int nSeverity, int indent);
@@ -62,8 +67,17 @@ public:
     void AddStatus(QString sID, StatusCode nCode, StatusType nType, int nTime);
     void WriteDomToFile();
 
+    /**
+     * @brief Document
+     * @return
+     */
+    inline QDomDocument * Document(){ return m_pDoc; }
 
+    // inline void Log(QString sMsg){ Log(sMsg, "", SEVERITY_SUCCESS, 0); }
+//        inline void LogDebug(QString sMsg, int indent){ Log(sMsg, "", SEVERITY_VERBOSE, indent); }
     void AddResult(QString sTagName, QString sTagValue);
+
+
 private:
 
     QFile * m_xmlFile;
@@ -72,6 +86,13 @@ private:
     QString m_sTMPFilePath;
 
     QDomDocument * m_pDoc;
+
+    XMLFileType m_XMLType;
+
+    void InitResults(QString &sFilePath);
+    void InitLog(QString &sFilePath);
+
+    void EnsureFilePath(QString &sFilePath, bool bHasTmp);
 
     inline void mySleep(int sleepMs)
     {

@@ -12,39 +12,61 @@
 
 namespace Gut{
 
-class DLL_API GutRun
-{
+
+class DLL_API GutRun{
 public:
+   static GutRun * Instance(const char * psXMLInput);
+   /**
+    * @brief Run gut on the XML file that has been passed in
+    * @return
+    */
+   int Run();
 
-    GutRun(const char *psXMLInput);
-    ~GutRun();
+   /**
+    * @brief GetRaster
+    * @param eRasterType
+    * @return
+    */
+   GutRaster * GetRaster(EvidenceRaster eRasterType);
 
-    /**
-     * @brief Run gut on the XML file that has been passed in
-     * @return
-     */
-    int Run();
-
-    /**
-     * @brief GetRaster
-     * @param eRasterType
-     * @return
-     */
-    GutRaster * GetRaster(EvidenceRaster eRasterType);
+   static QString BaseFileNameAppend(QString sFullFilePath, QString sAppendStr);
 
 private:
-    static QHash<EvidenceRaster, GutRaster *> m_RasterStore;
+   GutRun(const char * psXMLInput);  // Private so that it can  not be called
+   GutRun(GutRun const&){}            // copy constructor is private
+   ~GutRun();
 
-    // 3 XML files used here:
-    static XMLFile m_XML_Inputs;
-    static XMLFile m_XML_Results;
-    static XMLFile m_XML_Logs;
+   GutRun& operator=(GutRun const&){}  // assignment operator is private
+   static GutRun* m_pInstance;
 
-    // These global params get read from the XML input file
-    static int param1;
-    static QString param2;
+   /**
+    * @brief EnsureFile deletes a file if it already exists and recursively creates folders
+    * @param sFilePath
+    */
+   void EnsureFile(QString sFilePath);
+   /**
+    * @brief GetInputParamText
+    * @param containerName
+    * @param tagName
+    * @return
+    */
+   QString GetInputParamText(QString containerName, QString tagName);
+
+   QDir qdOutputDir;
+   QDir qdTempDir;
+
+   QHash<EvidenceRaster, GutRaster *> m_RasterStore;
+
+   // 3 XML files used here:
+   XMLFile * m_XML_Inputs;
+   QDomDocument * m_elConf;
+   XMLFile * m_XML_Results;
+   XMLFile * m_XML_Logs;
+
+   // These global params get read from the XML input file
+   int param1;
+   QString param2;
 };
-
 
 }
 #endif // SITE_H

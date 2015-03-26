@@ -11,9 +11,10 @@ TARGET = GutCore
 TARGET_EXT = .dll # prevent version suffix on dll
 TEMPLATE = lib
 
-VERSION = 1.0.1
-DEFINES += LIBVERSION=\\\"$$VERSION\\\" # Makes verion available to c++
-DEFINES += MINGDAL=\\\"1.11.1\\\" # Minimum Version of GDAL we need
+VERSION = 1.0.2
+DEFINES += GUTLIBVERSION=\\\"$$VERSION\\\" # Makes verion available to c++
+DEFINES += GDALMAJ=\\\"1\\\" # Minimum Major Version of GDAL we need
+DEFINES += GDALMIN=\\\"11\\\" # Minimum Minor Version of GDAL we need
 DEFINES += MINRASTERMAN=\\\"6.1.6\\\" # Minimum Version of GDAL we need
 
 DEFINES += GUT_LIBRARY

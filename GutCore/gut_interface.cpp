@@ -7,13 +7,37 @@
 
 namespace Gut{
 
-DLL_API const char * GetLibVersion(){ return LIBVERSION; }
+DLL_API const char * GetLibVersion(){ return GUTLIBVERSION; }
+
+DLL_API bool CheckRMVersion(){
+    QString sReqdVersion = QString(MINRASTERMAN);
+    QString sLibVersion = QString(RasterManager::GetLibVersion());
+    return sReqdVersion.compare(sLibVersion, Qt::CaseInsensitive) == 0;
+}
+
+DLL_API const char * GetReqRMVersion(){
+    QString version = QString(MINRASTERMAN);
+    const QByteArray qbVersion = version.toLocal8Bit();
+    return qbVersion.data();
+}
+
+DLL_API const char * GetReqGDALVersion(){
+    QString version = QString("%1.%2").arg(GDALMAJ).arg(GDALMIN);
+    const QByteArray qbVersion = version.toLocal8Bit();
+    return qbVersion.data();
+}
+
+DLL_API bool CheckGDALVersion(){
+    QString vMaj = QString(GDALMAJ);
+    QString vMin = QString(GDALMIN);
+
+    return GDALCheckVersion(vMaj.toInt(), vMin.toInt(), NULL);
+}
 
 extern "C" DLL_API int RunGut(const char * psXMLFile){
     int eResult = PROCESS_OK;
     try{
-        GutRun theGutRun(psXMLFile);
-        eResult = theGutRun.Run();
+        eResult = GutRun::Instance(psXMLFile)->Run();
     }
     catch (GutException& e){
         // At this point there's no XML file loaded so we need to just

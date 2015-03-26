@@ -20,6 +20,20 @@ void GutRaster::Init(EvidenceRaster eRasterType){
     m_bInUse = true;
 }
 
+RasterManager::Raster *GutRaster::GetBaseRaster()
+{
+    if (m_BaseRaster == NULL)
+        CreateBaseRaster();
+    return m_BaseRaster;
+}
+
+RasterManager::Raster *GutRaster::GetNormalizedRaster()
+{
+    if (m_BaseRaster == NULL)
+        CreateNormalizedRaster();
+    return m_NormRaster;
+}
+
 GutRaster::~GutRaster()
 {
     if (m_BaseRaster != NULL)
@@ -31,6 +45,10 @@ GutRaster::~GutRaster()
 QString GutRaster::GetOutputPath(QString sPathPrefix){
     return "";
 }
+
+// -------------------------------------------------------------------------------------------
+//  Everything below here is simply stringing together RasterManagerCommands to get an evidence Raster
+// -------------------------------------------------------------------------------------------
 
 int GutRaster::CreateChannelMask(){
     return PROCESS_OK;

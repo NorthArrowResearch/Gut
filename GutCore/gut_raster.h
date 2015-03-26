@@ -9,30 +9,63 @@ namespace Gut{
 class GutRaster
 {
 public:
+
     GutRaster(EvidenceRaster eRasterType);
+
     GutRaster(EvidenceRaster eRasterType, const char *sFilename);
+
     ~GutRaster();
 
     void Init(EvidenceRaster eRasterType);
 
-    int CreateBaseRaster(EvidenceRaster eRasterType);
+    /**
+     * @brief CreateNormalizedRaster
+     * @return
+     */
     int CreateNormalizedRaster(){
         return PROCESS_OK;
     }
 
+    /**
+     * @brief GetType
+     * @return
+     */
     inline EvidenceRaster GetType(){ return m_RasterType; }
-    inline RasterManager::Raster * GetBaseRaster(){
-            return m_BaseRaster;
-    }
-    inline RasterManager::Raster * GetNormalizedRaster(){
-        if (m_BaseRaster == NULL)
-            CreateNormalizedRaster();
-        return m_NormRaster;
-    }
+
+    /**
+     * @brief GetBaseRaster
+     * @return
+     */
+    RasterManager::Raster * GetBaseRaster();
+
+    /**
+     * @brief GetNormalizedRaster
+     * @return
+     */
+    RasterManager::Raster * GetNormalizedRaster();
+
+    /**
+     * @brief IsInUse
+     * @return
+     */
     inline bool IsInUse(){ return m_bInUse; }
 
+    /**
+     * @brief CreateFileName
+     */
     void CreateFileName();
 
+    /**
+     * @brief GetOutputPath
+     * @param sPathPrefix
+     * @return
+     */
+    QString GetOutputPath(QString sPathPrefix);
+
+    /**
+     * @brief CreateBaseRaster just choosing which create function to run
+     * @return
+     */
     inline int CreateBaseRaster()
     {
         // First disallow anything that cannot be derived.
@@ -109,8 +142,6 @@ public:
         }
         return PROCESS_OK;
     }
-
-    QString GetOutputPath(QString sPathPrefix);
 
 
 private:

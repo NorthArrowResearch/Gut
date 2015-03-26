@@ -11,9 +11,7 @@ public:
     GutEngine();
     int Run(int argc, char *argv[]);
 private:
-
-    void CheckRasterManVersion();
-    void CheckGutVersion();
+    bool CheckLibersion();
 
 };
 

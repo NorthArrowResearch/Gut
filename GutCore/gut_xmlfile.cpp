@@ -11,40 +11,136 @@
 
 namespace Gut{
 
-QString sTmpPrefix = "_TMP_OUT_";
+QString sTmpPrefix = "_TMP_GUT_LOG_";
 
-XMLFile::XMLFile(QString sXmlFile, bool bInput)
+XMLFile::XMLFile(QString sXmlFile, XMLFileType bInput)
 {
-    // Is it an input file or an output file?
-    if (bInput && QFile(sXmlFile).exists())
+    // No matter what type of file it is the path gets set here.
+    m_sXMLFilePath = sXmlFile;
+    m_sTMPFilePath = "";
+    m_XMLType = bInput;
+    switch (bInput) {
+    case INPUT_FILE:
         Load(sXmlFile);
-    else if (!bInput)
-        Init(sXmlFile);
+        break;
+    case RESULTS_FILE:
+        InitResults(sXmlFile);
+        break;
+    case LOG_FILE:
+        InitLog(sXmlFile);
+        break;
+    default: break;
+    }
 
-    //Something is wrong. Throw an exception
-    else if (bInput && !QFile(sXmlFile).exists())
-        throw GutException(FILE_NOT_FOUND, sXmlFile);
-    else
-        throw GutException(FILE_PRESENT, sXmlFile);
 }
 
-XMLFile::~XMLFile(){
+void XMLFile::EnsureFilePath( QString &sFilePath, bool bHasTmp ){
 
-    if (!m_xmlFile == NULL)
-    {
-        if (m_xmlFile->isOpen())
-            m_xmlFile->close();
+    QFileInfo sNewFileInfo(sFilePath);
+    QDir sNewDir = QDir(sNewFileInfo.absolutePath());
 
-        delete m_xmlFile;
+    // Delete a file if it already exists.
+    if (sNewFileInfo.exists())
+        QFile::remove(sNewFileInfo.absoluteFilePath());
+
+    // Make a path if we don't have one already.
+    if (!sNewDir.exists()){
+      sNewDir.mkpath(".");
     }
-    // Now clean up the temparary file.
-    if (QFile::exists(m_sTMPFilePath))
-    {
-        QFile::remove(m_sTMPFilePath);
-    }
 
-    // Delete the TMP file
-    delete m_pDoc;
+    if (bHasTmp){
+        // On the log we write to a temporary file to get around collisions
+        m_sTMPFilePath = QDir(sNewDir).filePath( GetTmpFileName(sFilePath) );
+        m_xmlFile = new QFile(m_sTMPFilePath);
+
+        // Clean up all older TMP files
+        QStringList slTmpFiles;
+        QString fileName = sTmpPrefix + "*.xml";
+        slTmpFiles = sNewDir.entryList(QStringList(fileName),
+                                     QDir::Files | QDir::NoSymLinks);
+
+        foreach(QString sTmpFile, slTmpFiles){
+            // If the file was already there remove it
+            QString sTmpFilePath = QDir(sNewDir).filePath( sTmpFile );
+            if (QFile::exists(sTmpFilePath))
+                QFile::remove(sTmpFilePath);
+        }
+
+    }
+    else{
+        m_xmlFile = new QFile(sFilePath);
+    }
+}
+
+void XMLFile::InitResults( QString &sFilePath ){
+
+    EnsureFilePath( sFilePath, false );
+
+    m_pDoc = new QDomDocument;
+
+    // Clean up the status items
+    QDomElement documentElement = m_pDoc->documentElement();
+
+    /* open a file */
+    if (!m_xmlFile->open(QIODevice::WriteOnly))
+        throw GutException(FILE_READ_ONLY, m_xmlFile->fileName());
+    else
+    {
+
+        QDomElement results = m_pDoc->createElement("results");
+        QDomElement meta = m_pDoc->createElement("meta_data");
+
+        results.appendChild(meta);
+
+        QDomNode xmlNode = m_pDoc->createProcessingInstruction("xml",
+                                     "version=\"1.0\" encoding=\"ISO-8859-1\"");
+
+        m_pDoc->appendChild(xmlNode);
+        m_pDoc->appendChild(results);
+
+    }
+    m_xmlFile->close();
+    WriteDomToFile();
+
+}
+
+// Create the file with the base skeleton we need. Then close it.
+void XMLFile::InitLog( QString &sFilePath ){
+
+    // Make sure we have the paths necessary
+    EnsureFilePath( sFilePath, true );
+
+    m_pDoc = new QDomDocument;
+
+    // Clean up the status items
+    QDomElement documentElement = m_pDoc->documentElement();
+
+    /*open a file */
+    if (!m_xmlFile->open(QIODevice::WriteOnly))
+        throw GutException(FILE_READ_ONLY, m_xmlFile->fileName());
+    else
+    {
+
+        QDomElement log = m_pDoc->createElement("log");
+        QDomElement status = m_pDoc->createElement("status");
+        QDomElement results = m_pDoc->createElement("results");
+        QDomElement meta = m_pDoc->createElement("meta_data");
+        QDomElement messages = m_pDoc->createElement("messages");
+
+        log.appendChild(results);
+        log.appendChild(meta);
+        log.appendChild(messages);
+        log.appendChild(status);
+
+        QDomNode xmlNode = m_pDoc->createProcessingInstruction("xml",
+                                     "version=\"1.0\" encoding=\"ISO-8859-1\"");
+
+        m_pDoc->appendChild(xmlNode);
+        m_pDoc->appendChild(log);
+
+    }
+    m_xmlFile->close();
+    WriteDomToFile();
 }
 
 void XMLFile::Load(QString &sFilePath)
@@ -78,66 +174,6 @@ void XMLFile::CopyTmpToOutput(){
     {
          //Do nothing. We don't care that it can't write.
     }
-}
-
-// Create the file with the base skeleton we need. Then close it.
-void XMLFile::Init(QString &sFilePath){
-
-    m_pDoc = new QDomDocument;
-
-    // Clean up the status items
-    QDomElement documentElement = m_pDoc->documentElement();
-    QDomNodeList elements = documentElement.elementsByTagName( "meta_data" );
-
-    m_sXMLFilePath = sFilePath;
-
-    QFileInfo sNewFileInfo(sFilePath);
-    QDir sNewDir = QDir(sNewFileInfo.absolutePath());
-
-    // Clean up all older TMP files
-    QStringList slTmpFiles;
-
-    QString fileName = sTmpPrefix + "*.xml";
-    slTmpFiles = sNewDir.entryList(QStringList(fileName),
-                                 QDir::Files | QDir::NoSymLinks);
-
-    foreach(QString sTmpFile, slTmpFiles){
-        // If the file was already there remove it
-        QString sTmpFilePath = QDir(sNewDir).filePath( sTmpFile );
-        if (QFile::exists(sTmpFilePath))
-            QFile::remove(sTmpFilePath);
-    }
-
-
-    m_sTMPFilePath = QDir(sNewDir).filePath( GetTmpFileName(sFilePath) );
-
-    m_xmlFile = new QFile(m_sTMPFilePath);
-
-    /*open a file */
-    if (!m_xmlFile->open(QIODevice::WriteOnly))
-        throw GutException(FILE_READ_ONLY, m_xmlFile->fileName());
-    else
-    {
-
-        QDomElement log = m_pDoc->createElement("log");
-        QDomElement status = m_pDoc->createElement("status");
-        QDomElement results = m_pDoc->createElement("results");
-        QDomElement meta = m_pDoc->createElement("meta_data");
-        QDomElement messages = m_pDoc->createElement("messages");
-
-        log.appendChild(results);
-        log.appendChild(meta);
-        log.appendChild(messages);
-        log.appendChild(status);
-
-        QDomNode xmlNode = m_pDoc->createProcessingInstruction("xml",
-                                     "version=\"1.0\" encoding=\"ISO-8859-1\"");
-
-        m_pDoc->appendChild(xmlNode);
-        m_pDoc->appendChild(log);
-
-    }
-    m_xmlFile->close();
 }
 
 void XMLFile::AddMeta(QString sTagName, QString sTagValue){
@@ -340,8 +376,30 @@ void XMLFile::WriteDomToFile(){
     QTextStream out(m_xmlFile);
     m_pDoc->save(out, Indent);
     m_xmlFile->close();
-    CopyTmpToOutput();
 
+    if (m_sTMPFilePath.length() > 0)
+        CopyTmpToOutput();
+
+}
+
+
+XMLFile::~XMLFile(){
+
+    if (!m_xmlFile == NULL)
+    {
+        if (m_xmlFile->isOpen())
+            m_xmlFile->close();
+
+        delete m_xmlFile;
+    }
+    // Now clean up the temparary file.
+    if (QFile::exists(m_sTMPFilePath))
+    {
+        QFile::remove(m_sTMPFilePath);
+    }
+
+    // Delete the TMP file
+    delete m_pDoc;
 }
 
 

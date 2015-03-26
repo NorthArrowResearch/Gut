@@ -9,7 +9,9 @@
   </metadata>
   <visit>
       <name>CBW05583-254415</name>
+      <clean>true</clean>
       <outputs>
+        <tempdir>c:\someTempDir</tempdir>
         <dir>c:\some\dir</dir>
         <log>CBW05583-254415-log.xml</log>
         <results>CBW05583-254415-results.xml</results>
