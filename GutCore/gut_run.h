@@ -21,14 +21,15 @@ public:
     * @brief Run gut on the XML file that has been passed in
     * @return
     */
-   int Run();
+   void Run();
+
 
    /**
     * @brief GetRaster
     * @param eRasterType
     * @return
     */
-   GutRaster * GetRaster(EvidenceRaster eRasterType);
+   GutRaster * GetCreateRaster(RasterManOperation eRasterType);
 
    inline QString GetOutputDir(){ return qdOutputDir.absolutePath(); }
    inline QString GetTempDir(){ return qdTempDir.absolutePath(); }
@@ -40,6 +41,8 @@ private:
    GutRun();  // Private so that it can  not be called
    GutRun(GutRun const&){}            // copy constructor is private
    ~GutRun();
+
+   void CombineRasters();
 
    GutRun& operator=(GutRun const&){}  // assignment operator is private
    static GutRun* m_pInstance;

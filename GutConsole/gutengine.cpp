@@ -3,7 +3,6 @@
 #include "gut_interface.h"
 #include "rastermanager_exception.h"
 #include "rastermanager_interface.h"
-#include "gut.h"
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
@@ -54,7 +53,7 @@ int GutEngine::Run(int argc, char *argv[])
     {
         GutRun * theRun = GutRun::Instance();
         theRun->Init(argv[1]);
-        return theRun->Run();
+        theRun->Run();
     }
     else{
         std::cout << "\n Geomorphic Utilization Tool v"<<EXEVERSION;

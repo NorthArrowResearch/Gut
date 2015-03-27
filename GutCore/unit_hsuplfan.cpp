@@ -2,7 +2,6 @@
 
 namespace Gut{
 
-}
 UnitHSUplFan::UnitHSUplFan()
 {
 }

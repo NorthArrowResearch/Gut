@@ -16,13 +16,15 @@ enum GeoUnit{
   TIER2_PLANAR,
 };
 
-class Unit:
+class Unit
 {
 public:
     Unit();
 
 private:
 
+    void CreateEvidenceRaster();
+    virtual void Setup()=0;
 };
 
 }

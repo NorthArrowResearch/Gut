@@ -9,6 +9,8 @@ class UnitHSUplFan : public Unit
 {
 public:
     UnitHSUplFan();
+private:
+    inline void Setup(){}
 };
 
 }

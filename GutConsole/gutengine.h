@@ -2,6 +2,7 @@
 #define GUTENGINE_H
 
 #include <QString>
+#include "gut_run.h"
 
 namespace Gut {
 

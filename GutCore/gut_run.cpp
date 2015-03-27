@@ -143,27 +143,25 @@ QString GutRun::BaseFileNameAppend(QString sFullFilePath, QString sAppendStr){
     return newPath;
 }
 
-GutRaster * GutRun::GetRaster(EvidenceRaster eRasterType)
+GutRaster * GutRun::GetCreateRaster(RasterManOperation eRasterType)
 {
     // Go into the raster store and get the raster we want
     // If it's not there then make it.
-    GutRaster * theRaster;
-    if (!m_RasterStore.contains(eRasterType)){
-        theRaster =  new GutRaster(eRasterType);
-        m_RasterStore.insert(eRasterType, theRaster);
-    }
-    else{
-        theRaster = m_RasterStore.find(eRasterType).value();
-    }
-    return theRaster;
+//    GutRaster * theRaster;
+//    if (!m_RasterStore.contains(eRasterType)){
+//        theRaster =  new GutRaster(eRasterType);
+//        m_RasterStore.insert(eRasterType, theRaster);
+//    }
+//    else{
+//        theRaster = m_RasterStore.find(eRasterType).value();
+//    }
+//    return theRaster;
 }
 
-int GutRun::Run()
+void GutRun::Run()
 {
     InitCheck();
     LoadSourceRasters();
-    MakeEvidenceRasters();
-    return PROCESS_OK;
 }
 
 void GutRun::LoadSourceRasters(){
