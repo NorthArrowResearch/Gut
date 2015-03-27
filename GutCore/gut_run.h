@@ -8,7 +8,7 @@
 #include <QTime>
 #include "gut_raster.h"
 #include <QString>
-#include "gut_xmlfile.h"
+#include "xmlfile.h"
 
 namespace Gut{
 

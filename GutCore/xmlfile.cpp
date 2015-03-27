@@ -1,4 +1,4 @@
-#include "gut_xmlfile.h"
+#include "xmlfile.h"
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>

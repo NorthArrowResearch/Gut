@@ -7,6 +7,7 @@
 #include "gut_exception.h"
 #include "gut_interface.h"
 #include "gutengine.h"
+#include "rastermanager_exception.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,9 +26,14 @@ int main(int argc, char *argv[])
         }
         exit (EXIT_SUCCESS);
     }
+    catch (RasterManager::RasterManagerException & e)
+    {
+        std::cerr << "RasterMan Error: " << e.GetReturnMsgAsString().toStdString() << std::endl;
+        exit (EXIT_FAILURE);
+    }
     catch (Gut::GutException & e)
     {
-        std::cerr << "Error: " << e.GetReturnMsgAsString().toStdString() << std::endl;
+        std::cerr << "Gut Error: " << e.GetReturnMsgAsString().toStdString() << std::endl;
         exit (EXIT_FAILURE);
     }
     catch (std::exception & e)

@@ -20,18 +20,22 @@ DEFINES += MINRASTERMAN=\\\"6.1.6\\\" # Minimum Version of GDAL we need
 DEFINES += GUT_LIBRARY
 
 SOURCES += \
-    gut_interface.cpp \
-    gut_xmlfile.cpp \
+    unit.cpp \
+    xmlfile.cpp \
     gut_raster.cpp \
-    gut.cpp
+    gut_run.cpp \
+    gut_interface.cpp \
+    unit_hsuplfan.cpp
 
 HEADERS +=\
         gut_global.h \
     gut_exception.h \
-    gut_interface.h \
+    unit.h \
+    xmlfile.h \
     gut_raster.h \
-    gut_xmlfile.h \
-    gut.h
+    gut_run.h \
+    gut_interface.h \
+    unit_hsuplfan.h
 
 CONFIG(release, debug|release): BUILD_TYPE = release
 else:CONFIG(debug, debug|release): BUILD_TYPE = debug

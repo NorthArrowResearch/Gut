@@ -1,5 +1,5 @@
 #define MY_DLL_EXPORT
-#include "gut.h"
+#include "gut_run.h"
 #include <QDebug>
 
 namespace Gut{
@@ -173,22 +173,6 @@ void GutRun::LoadSourceRasters(){
     m_RasterStore.insert(OR_WATER_EXTENT, new GutRaster(OR_WATER_EXTENT, GetSourceRasterPath("waterextent") ) );
     m_RasterStore.insert(OR_BANKFULL, new GutRaster(OR_BANKFULL, GetSourceRasterPath("bankfull") ) );
     m_RasterStore.insert(OR_DETRENDED, new GutRaster(OR_DETRENDED, GetSourceRasterPath("detrended") ) );
-}
-
-void GutRun::MakeEvidenceRasters(){
-
-    // Generate the final evidence Rasters one-by-one
-    // NB: The intermediate rasters are created automatically.
-//    GetRaster(MR_CONCAVITY);
-//    GetRaster(MR_CONVEXITY);
-    GutRaster * activeflood = GetRaster(MR_ACTIVE_FLOODPLAIN);
-    RasterManager::Raster * someRaster = activeflood->GetBaseRaster();
-//    GetRaster(MR_TERRACE);
-//    GetRaster(MR_PLANAR_RAPID);
-//    GetRaster(MR_PLANAR_RUNGLIDE);
-//    GetRaster(MR_HILLSLOPE);
-//    GetRaster(MR_CUTBANK);
-//    GetRaster(MR_CHANNEL_MARGIN);
 }
 
 GutRun::~GutRun()
