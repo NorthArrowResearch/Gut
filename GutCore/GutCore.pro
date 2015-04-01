@@ -25,7 +25,8 @@ SOURCES += \
     gut_raster.cpp \
     gut_run.cpp \
     gut_interface.cpp \
-    unit_hsuplfan.cpp
+    unit_hsuplfan.cpp \
+    rmoperation.cpp
 
 HEADERS +=\
         gut_global.h \
@@ -35,7 +36,8 @@ HEADERS +=\
     gut_raster.h \
     gut_run.h \
     gut_interface.h \
-    unit_hsuplfan.h
+    unit_hsuplfan.h \
+    rmoperation.h
 
 CONFIG(release, debug|release): BUILD_TYPE = release
 else:CONFIG(debug, debug|release): BUILD_TYPE = debug

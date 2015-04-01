@@ -26,11 +26,6 @@ int main(int argc, char *argv[])
         }
         exit (EXIT_SUCCESS);
     }
-    catch (RasterManager::RasterManagerException & e)
-    {
-        std::cerr << "RasterMan Error: " << e.GetReturnMsgAsString().toStdString() << std::endl;
-        exit (EXIT_FAILURE);
-    }
     catch (Gut::GutException & e)
     {
         std::cerr << "Gut Error: " << e.GetReturnMsgAsString().toStdString() << std::endl;

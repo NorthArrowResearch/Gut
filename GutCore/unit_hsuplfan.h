@@ -2,6 +2,7 @@
 #define UNIT_HSUPLFAN_H
 
 #include "unit.h"
+#include <QList>
 
 namespace Gut{
 
@@ -10,7 +11,7 @@ class UnitHSUplFan : public Unit
 public:
     UnitHSUplFan();
 private:
-    inline void Setup(){}
+    void Setup();
 };
 
 }

@@ -3,30 +3,33 @@
 
 namespace Gut{
 
-GutRaster::GutRaster(EvidenceRaster eRasterType, QString sFilename){
-    Init(eRasterType);
+GutRaster::GutRaster(QString sFilename){
+    m_RasterType = RASTER_ORIGINAL;
+
     m_RasterPath = sFilename;
-    const QByteArray qbFileName = sFilename.toLocal8Bit();
-    m_BaseRaster = new RasterManager::Raster(qbFileName.data());
+    m_RMOperation = NULL;
 }
 
-GutRaster::GutRaster(EvidenceRaster eRasterType){
-    Init(eRasterType);
+GutRaster::GutRaster(RasterType eRasterType, RMOperation stRMOp){
+
 }
 
-void GutRaster::Init(EvidenceRaster eRasterType){
-    m_RasterType = eRasterType;
-    m_NormRaster = NULL;
-    m_BaseRaster = NULL;
-    m_bInUse = true;
+void GutRaster::Create(RasterType eRasterType, RasterManCMD eOp, QList<QString *> qlParams)
+{
+    switch (eRasterType) {
+    case RASTER_ORIGINAL: break;
+    case RASTER_TEMPORARY: break;
+    case RASTER_INTERMEDIATE: break;
+    case RASTER_FINAL: break;
+    default:
+        throw GutException(RASTER_TYPE, QString("Could not understand Raster Type: %1").arg(eRasterType));
+        break;
+    }
 }
 
 
 GutRaster::~GutRaster(){
-    if (m_BaseRaster != NULL)
-        delete m_BaseRaster;
-    if (m_NormRaster != NULL)
-        delete m_NormRaster;
+
 }
 
 QString GutRaster::CreateOutputRasterPath(QString sPathPrefix, QString sSuffix, bool bTmpDir){

@@ -6,4 +6,9 @@ Unit::Unit()
 {
 }
 
+void Unit::CreateEvidenceRaster()
+{
+
+}
+
 }

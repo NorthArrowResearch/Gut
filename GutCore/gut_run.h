@@ -9,6 +9,8 @@
 #include "gut_raster.h"
 #include <QString>
 #include "xmlfile.h"
+#include "unit.h"
+#include "unit_hsuplfan.h"
 
 namespace Gut{
 
@@ -23,17 +25,35 @@ public:
     */
    void Run();
 
-
    /**
     * @brief GetRaster
     * @param eRasterType
     * @return
     */
-   GutRaster * GetCreateRaster(RasterManOperation eRasterType);
+   GutRaster * GetCreateRaster(RasterType eRasterType, RMOperation rmOperation);
 
+   // Some getters and setters
+   /**
+    * @brief GetOutputDir
+    * @return
+    */
    inline QString GetOutputDir(){ return qdOutputDir.absolutePath(); }
+   /**
+    * @brief GetTempDir
+    * @return
+    */
    inline QString GetTempDir(){ return qdTempDir.absolutePath(); }
-
+   /**
+    * @brief CreateRasterName
+    * @return
+    */
+   QString CreateRasterName();
+   /**
+    * @brief BaseFileNameAppend
+    * @param sFullFilePath
+    * @param sAppendStr
+    * @return
+    */
    static QString BaseFileNameAppend(QString sFullFilePath, QString sAppendStr);
 
 
@@ -42,10 +62,16 @@ private:
    GutRun(GutRun const&){}            // copy constructor is private
    ~GutRun();
 
-   void CombineRasters();
-
    GutRun& operator=(GutRun const&){}  // assignment operator is private
-   static GutRun* m_pInstance;
+   static GutRun* m_pInstance; // Holds the pointer to itself as a singleton
+   void InitCheck();
+
+   // Workflow methods
+   void LoadSourceRasters();
+   void CreateUnits();
+   void CombineUnits();
+   void ClassifyUnits();
+
 
    /**
     * @brief EnsureFile deletes a file if it already exists and recursively creates folders
@@ -63,7 +89,8 @@ private:
    QDir qdOutputDir;
    QDir qdTempDir;
 
-   QHash<EvidenceRaster, GutRaster *> m_RasterStore;
+   QList<GutRaster *> m_RasterStore;
+   QList<Unit *> m_UnitStore;
 
    // 3 XML files used here:
    XMLFile * m_XML_Inputs;
@@ -74,11 +101,9 @@ private:
    // These global params get read from the XML input file
    int param1;
    QString param2;
-   void MakeEvidenceRasters();
-   void LoadSourceRasters();
    QString GetSourceRasterPath(QString sType);
 
-   void InitCheck();
+
 };
 
 }

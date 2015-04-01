@@ -26,6 +26,11 @@ enum GutOutputCodes {
     , DOM_LOAD_ERROR
     , FILE_READ_ONLY
 
+    , RASTER_TYPE
+    , RASTER_OPERATION
+    , RASTERMAN_ERROR
+    , RASTERMAN_PARAMS
+
     , GDALVERSION
     , RASTERMAN_VERSION
     , LIB_VERSION
@@ -41,13 +46,7 @@ public:
     inline GutException(int nErrorCode, QString sMsg){ Init(nErrorCode, sMsg); }
 
     inline ~GutException() throw() {}
-    /**
-     * @brief init
-     */
-    inline void Init(int nErrorCode, QString sMsg){
-        m_nErrorCode = nErrorCode;
-        m_sEvidence = sMsg;
-    }
+
     /**
      * @brief GetErrorCode
      * @return
@@ -122,8 +121,25 @@ public:
             return "Insufficient GDAL version detected.";
             break;
 
+        case RASTER_TYPE:
+            return "RasterType could not be determined";
+            break;
+
         case INIT_ERROR:
             return "GutRun was called without first being initialized";
+            break;
+
+        case RASTER_OPERATION:
+            return "RasterMan Operation was not specified";
+            break;
+
+        case RASTERMAN_ERROR:
+            return "RasterMan Encountered an error";
+            break;
+
+        case RASTERMAN_PARAMS:
+            return "Rasterman Parameters did not validate";
+            break;
 
         default:
             return "Unhandled Raster Manager Error.";
@@ -147,6 +163,15 @@ public:
 private:
     int m_nErrorCode;
     QString m_sEvidence;
+
+    /**
+     * @brief init
+     */
+    inline void Init(int nErrorCode, QString sMsg){
+        m_nErrorCode = nErrorCode;
+        m_sEvidence = sMsg;
+    }
+
 };
 
 }

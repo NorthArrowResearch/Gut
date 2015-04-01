@@ -1,7 +1,6 @@
 #ifndef UNIT_H
 #define UNIT_H
-
-
+#include <QString>
 
 namespace Gut{
 
@@ -21,10 +20,18 @@ class Unit
 public:
     Unit();
 
-private:
+protected:
+    QString m_sName;
+    QString m_sSafename;
 
+    // This is the generic way we combine intermediate rasters
+    // to get a combined membership raster.
+    // (See process 2: Combined membership.
     void CreateEvidenceRaster();
+
+private:
     virtual void Setup()=0;
+
 };
 
 }

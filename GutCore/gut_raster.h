@@ -1,18 +1,9 @@
 #ifndef GUTRASTER_H
 #define GUTRASTER_H
-#include "raster.h"
-#include "rastermanager_interface.h"
 #include "gut_interface.h"
+#include "rmoperation.h"
 
 namespace Gut{
-
-
-enum RasterManOperation{
-  RM_SLOPE,
-  RM_LINTHRESH,
-  RM_INVERT,
-  RM_MASKVAL
-};
 
 enum RasterType{
   RASTER_ORIGINAL,
@@ -25,49 +16,37 @@ class GutRaster
 {
 public:
 
-    /**
-     * @brief GutRaster
-     * @param eRasterType
-     */
-    GutRaster(EvidenceRaster eRasterType);
-
-    /**
-     * @brief GutRaster
-     * @param eRasterType
-     * @param sFilename
-     */
-    GutRaster(EvidenceRaster eRasterType, QString sFilename);
-
+    // Constructor for simply loading an existing raster
+    GutRaster(QString sRasterPath);
+    // Constructor for creating one from a rasterman Operation
+    GutRaster(RasterType eRasterType, RMOperation stRMOp);
     ~GutRaster();
 
-    void Init(EvidenceRaster eRasterType);
+    inline RMOperation * GetRMOperation(){ return m_RMOperation; }
+
+    inline QString GetPath(){ return m_RasterPath; }
 
     /**
      * @brief GetType
      * @return
      */
-    inline EvidenceRaster GetType(){ return m_RasterType; }
-
-    /**
-     * @brief IsInUse
-     * @return
-     */
-    inline bool IsInUse(){ return m_bInUse; }
+    inline RasterType GetType(){ return m_RasterType; }
 
 private:
 
     // Raster Type
     QString m_RasterPath;
-    EvidenceRaster m_RasterType;
-
-    bool m_bInUse;
+    RasterType m_RasterType;
+    RMOperation * m_RMOperation;
     bool m_bKeep;
 
-    RasterManager::Raster * m_BaseRaster;
-    RasterManager::Raster * m_NormRaster;
-
-    QList<QString *> m_TemporaryRasters;
-    QList<QString *> m_CombinationMembership;
+    /**
+     * @brief Create
+     * @param eRasterType
+     * @param eOp
+     * @param qlParams
+     */
+    void Create(RasterType eRasterType, RasterManCMD eOp, QList<QString *> qlParams);
 
     /**
      * @brief CreateOutputRasterPath

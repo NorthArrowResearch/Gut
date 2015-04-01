@@ -51,6 +51,37 @@ GutRun::GutRun()
     m_XML_Inputs = NULL;
 }
 
+void GutRun::Run()
+{
+    InitCheck(); // Make sure this singleton class has been initialized properly.
+    LoadSourceRasters();
+    CreateUnits();
+    CombineUnits();
+    ClassifyUnits();
+}
+
+void GutRun::CreateUnits(){
+    m_UnitStore.append(new UnitHSUplFan());
+}
+
+void GutRun::CombineUnits(){
+    // TODO: EVerything
+}
+
+void GutRun::ClassifyUnits(){
+    // TODO: EVerything
+}
+
+void GutRun::LoadSourceRasters(){
+
+    // Kick-Start the process with the original 4 Rasters we can't derive.
+    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("dem") ) );
+    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("waterextent") ) );
+    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("bankfull") ) );
+    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("detrended") ) );
+
+}
+
 
 QString GutRun::GetInputParamText(QString containerName, QString tagName){
 
@@ -143,45 +174,37 @@ QString GutRun::BaseFileNameAppend(QString sFullFilePath, QString sAppendStr){
     return newPath;
 }
 
-GutRaster * GutRun::GetCreateRaster(RasterManOperation eRasterType)
+GutRaster * GutRun::GetCreateRaster(RasterType eRasterType, RMOperation rmOperation)
 {
-    // Go into the raster store and get the raster we want
-    // If it's not there then make it.
-//    GutRaster * theRaster;
-//    if (!m_RasterStore.contains(eRasterType)){
-//        theRaster =  new GutRaster(eRasterType);
-//        m_RasterStore.insert(eRasterType, theRaster);
-//    }
-//    else{
-//        theRaster = m_RasterStore.find(eRasterType).value();
-//    }
-//    return theRaster;
-}
+    bool bFound = false;
+    GutRaster * theRaster;
+    foreach(GutRaster * gRaster, m_RasterStore)
+    {
+        if (gRaster->GetType() == eRasterType &&
+                *gRaster->GetRMOperation() == rmOperation){
+            theRaster = gRaster;
+            bFound = true;
+            break;
+        }
+    }
 
-void GutRun::Run()
-{
-    InitCheck();
-    LoadSourceRasters();
-}
+    // If not found then we make it.
+    if (!bFound){
+        theRaster = new GutRaster(eRasterType, rmOperation);
 
-void GutRun::LoadSourceRasters(){
+        // The farther down the process we are the least general re-use there should be
+        // so "push_back" is the right choice.
+        m_RasterStore.push_back(theRaster);
+    }
 
-    // Kick-Start the process with the original 4 Rasters we can't derive.
-    m_RasterStore.insert(OR_DEM, new GutRaster(OR_DEM,  GetSourceRasterPath("dem") ) );
-    m_RasterStore.insert(OR_WATER_EXTENT, new GutRaster(OR_WATER_EXTENT, GetSourceRasterPath("waterextent") ) );
-    m_RasterStore.insert(OR_BANKFULL, new GutRaster(OR_BANKFULL, GetSourceRasterPath("bankfull") ) );
-    m_RasterStore.insert(OR_DETRENDED, new GutRaster(OR_DETRENDED, GetSourceRasterPath("detrended") ) );
+    return theRaster;
 }
 
 GutRun::~GutRun()
 {
-    // Empty the raster store
-    QHashIterator<EvidenceRaster, GutRaster *> i(m_RasterStore);
-    while (i.hasNext()) {
-        i.next();
-        delete i.value();
-    }
-    m_RasterStore.clear();
+
+    qDeleteAll(m_RasterStore);
+
 
     if (m_XML_Inputs != NULL)
         delete m_XML_Inputs;
