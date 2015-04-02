@@ -5,8 +5,7 @@ namespace Gut{
 
 GutRaster::GutRaster(QString sFilename){
     m_RasterType = RASTER_ORIGINAL;
-
-    m_RasterPath = sFilename;
+    m_RasterFilePath = XMLFile::GetTmpFileName(sFilename, 6, "tif");
     m_RMOperation = NULL;
 }
 
@@ -35,9 +34,9 @@ GutRaster::~GutRaster(){
 QString GutRaster::CreateOutputRasterPath(QString sPathPrefix, QString sSuffix, bool bTmpDir){
     QString sDir = "";
     if (bTmpDir)
-        sDir = GutRun::Instance()->GetTempDir();
+        sDir = GutRun::Instance().GetGutTempDir();
     else
-        sDir = GutRun::Instance()->GetOutputDir();
+        sDir = GutRun::Instance().GetOutputDir();
 
     return QDir(sDir).filePath(sPathPrefix + QString(".") + sSuffix );
 }

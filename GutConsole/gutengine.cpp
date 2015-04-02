@@ -51,9 +51,7 @@ int GutEngine::Run(int argc, char *argv[])
     int eResult = Gut::PROCESS_OK;
     if (argc == 2)
     {
-        GutRun * theRun = GutRun::Instance();
-        theRun->Init(argv[1]);
-        theRun->Run();
+        GutRun::Instance().Run(argv[1]);
     }
     else{
         std::cout << "\n Geomorphic Utilization Tool v"<<EXEVERSION;
@@ -68,6 +66,7 @@ int GutEngine::Run(int argc, char *argv[])
     // De-initialize all GDAL drivers.
     GDALDestroyDriverManager();
 
+    return PROCESS_OK;
 }
 
 

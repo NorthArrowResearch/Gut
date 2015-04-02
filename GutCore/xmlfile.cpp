@@ -11,8 +11,6 @@
 
 namespace Gut{
 
-QString sTmpPrefix = "_TMP_GUT_LOG_";
-
 XMLFile::XMLFile(QString sXmlFile, XMLFileType bInput)
 {
     // No matter what type of file it is the path gets set here.
@@ -38,6 +36,7 @@ void XMLFile::EnsureFilePath( QString &sFilePath, bool bHasTmp ){
 
     QFileInfo sNewFileInfo(sFilePath);
     QDir sNewDir = QDir(sNewFileInfo.absolutePath());
+    QString sTmpPrefix = "_GUT_TMP_" + sNewFileInfo.baseName();
 
     // Delete a file if it already exists.
     if (sNewFileInfo.exists())
@@ -50,7 +49,7 @@ void XMLFile::EnsureFilePath( QString &sFilePath, bool bHasTmp ){
 
     if (bHasTmp){
         // On the log we write to a temporary file to get around collisions
-        m_sTMPFilePath = QDir(sNewDir).filePath( GetTmpFileName(sFilePath) );
+        m_sTMPFilePath = QDir(sNewDir).filePath( GetTmpFileName(sTmpPrefix, 8, "xml"));
         m_xmlFile = new QFile(m_sTMPFilePath);
 
         // Clean up all older TMP files
@@ -255,27 +254,33 @@ void XMLFile::AddResult(QString sTagName, QString sTagValue){
 
 }
 
-QString XMLFile::GetTmpFileName(QString xmlOutputFile)
+QString XMLFile::GetTmpFileName(QString sFileName, int randomStringLength, QString sSuffix)
+{    
+   QString tmpName =  QString("%1_%2.%3").arg(sFileName).arg(RandomString(randomStringLength)).arg(sSuffix);
+   return tmpName;
+}
+
+QString XMLFile::GetTmpFolderName(QString sFolderName, int randomStringLength)
 {
+   return sFolderName + QString("_") + RandomString(randomStringLength);
+}
+
+QString XMLFile::RandomString(int length){
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 
-   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-");
-   const int randomStringLength = 16; // assuming you want random strings of 12 characters
+    QString randomString;
 
-   QString randomString;
-
-   for(int i=0; i < randomStringLength; ++i)
-   {
-       int index = qrand() % possibleCharacters.length();
-       QChar nextChar = possibleCharacters.at(index);
-       randomString.append(nextChar);
-   }
-
-   return sTmpPrefix + randomString + ".xml";
+    for(int i=0; i < length; ++i)
+    {
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        randomString.append(nextChar);
+    }
+    return randomString;
 }
-
 
 void XMLFile::Log(QString sMsg, QString sException, int nSeverity, int indent)
 {

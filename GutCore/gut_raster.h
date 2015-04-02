@@ -24,7 +24,7 @@ public:
 
     inline RMOperation * GetRMOperation(){ return m_RMOperation; }
 
-    inline QString GetPath(){ return m_RasterPath; }
+    inline QString GetPath(){ return m_RasterFilePath; }
 
     /**
      * @brief GetType
@@ -35,7 +35,7 @@ public:
 private:
 
     // Raster Type
-    QString m_RasterPath;
+    QString m_RasterFilePath;
     RasterType m_RasterType;
     RMOperation * m_RMOperation;
     bool m_bKeep;

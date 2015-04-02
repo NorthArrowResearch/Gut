@@ -60,8 +60,15 @@ public:
     ~XMLFile();
     void Load(QString &sFilePath);
     void CopyTmpToOutput();
+
+    /**
+     * @brief AddMeta
+     * @param sTagName
+     * @param sTagValue
+     */
     void AddMeta(QString sTagName, QString sTagValue);
-    QString GetTmpFileName(QString xmlOutputFile);
+
+
     void Log(QString sMsg, QString sException, int nSeverity, int indent);
     void QueueStatus(QString sID, StatusCode nCode, StatusType nType, int nTime);
     void AddStatus(QString sID, StatusCode nCode, StatusType nType, int nTime);
@@ -77,7 +84,27 @@ public:
 //        inline void LogDebug(QString sMsg, int indent){ Log(sMsg, "", SEVERITY_VERBOSE, indent); }
     void AddResult(QString sTagName, QString sTagValue);
 
-
+    /**
+     * @brief GetTmpFileName
+     * @param xmlOutputFile
+     * @param length
+     * @param sSuffix
+     * @return
+     */
+    static QString GetTmpFileName(QString sFileName, int length, QString sSuffix);
+    /**
+     * @brief GetTmpFolderName
+     * @param sFolderName
+     * @param randomStringLength
+     * @return
+     */
+    static QString GetTmpFolderName(QString sFolderName, int randomStringLength);
+    /**
+     * @brief RandomString
+     * @param length
+     * @return
+     */
+    static QString RandomString(int length);
 private:
 
     QFile * m_xmlFile;

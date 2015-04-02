@@ -37,9 +37,7 @@ DLL_API bool CheckGDALVersion(){
 extern "C" DLL_API int RunGut(const char * psXMLFile){
     int eResult = PROCESS_OK;
     try{        
-        GutRun * theRun = GutRun::Instance();
-        theRun->Init(psXMLFile);
-        theRun->Run();
+        GutRun::Instance().Run(psXMLFile);
     }
     catch (GutException& e){
         // At this point there's no XML file loaded so we need to just

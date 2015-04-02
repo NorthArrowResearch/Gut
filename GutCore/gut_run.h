@@ -17,13 +17,18 @@ namespace Gut{
 
 class DLL_API GutRun{
 public:
-   static GutRun * Instance();
-   void Init(const char *psXMLInput);
+    // This is an implementation of the meyers singleton pattern.
+    inline static GutRun& Instance()
+    {
+        static GutRun instance;
+        return instance;
+    }
+
    /**
     * @brief Run gut on the XML file that has been passed in
     * @return
     */
-   void Run();
+   void Run(const char *psXMLInput);
 
    /**
     * @brief GetRaster
@@ -42,7 +47,7 @@ public:
     * @brief GetTempDir
     * @return
     */
-   inline QString GetTempDir(){ return qdTempDir.absolutePath(); }
+   inline QString GetGutTempDir(){ return qdGutRunTempDir.absolutePath(); }
    /**
     * @brief CreateRasterName
     * @return
@@ -58,26 +63,28 @@ public:
 
 
 private:
-   GutRun();  // Private so that it can  not be called
-   GutRun(GutRun const&){}            // copy constructor is private
+   GutRun();               // Private so that it can  not be called
+   GutRun(GutRun const&){} // copy constructor is private
    ~GutRun();
 
-   GutRun& operator=(GutRun const&){}  // assignment operator is private
-   static GutRun* m_pInstance; // Holds the pointer to itself as a singleton
+   GutRun& operator=(GutRun const&){} // assignment operator is private
+   static GutRun* m_pInstance;        // Holds the pointer to itself as a singleton
+
    void InitCheck();
 
    // Workflow methods
+   void Init(const char *psXMLInput);
    void LoadSourceRasters();
    void CreateUnits();
    void CombineUnits();
-   void ClassifyUnits();
-
+   void ClassifyUnits();   
 
    /**
     * @brief EnsureFile deletes a file if it already exists and recursively creates folders
     * @param sFilePath
     */
    void EnsureFile(QString sFilePath);
+
    /**
     * @brief GetInputParamText
     * @param containerName
@@ -87,7 +94,11 @@ private:
    QString GetInputParamText(QString containerName, QString tagName);
 
    QDir qdOutputDir;
-   QDir qdTempDir;
+
+   //   TEMP Folders:
+   QDir qdTempDir;       // This is the root TMP dir specified by the XML file.
+   QDir qdGutRunTempDir; // This is the Specific TMP dir inside which we find our TMP rasters.
+   bool bCleanTMP;       // Clean up the tmp files we create.
 
    QList<GutRaster *> m_RasterStore;
    QList<Unit *> m_UnitStore;

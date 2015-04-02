@@ -7,16 +7,8 @@ namespace Gut{
 /* --------------------------------------------------------------- */
 /* -- Static Variables need to be instantiated in CPP
       Check .h file for definition.                                */
-GutRun * GutRun::m_pInstance = NULL;
+//GutRun * GutRun::m_pInstance = NULL;
 /* --------------------------------------------------------------- */
-
-GutRun *GutRun::Instance()
-{
-    if (!m_pInstance)   // Only allow one instance of class to be generated.
-       m_pInstance = new GutRun();
-
-    return m_pInstance;
-}
 
 void GutRun::Init(const char * psXMLInput)
 {
@@ -37,6 +29,22 @@ void GutRun::Init(const char * psXMLInput)
     m_XML_Results = new XMLFile(qdOutputDir.filePath(sResults), RESULTS_FILE);
     m_XML_Logs = new XMLFile(qdOutputDir.filePath(sLog), LOG_FILE);
 
+    // By default we clean up our temporary files but we can choose to retain them.
+    bCleanTMP = true;
+    QString sKeepTmp = GetInputParamText("visit", "clean");
+    if (sKeepTmp.compare("false",Qt::CaseInsensitive) == 0)
+        bCleanTMP = false;
+
+    // Now set up a temporary Folder inside 'qdTempDir' for storing Rasters
+    qdGutRunTempDir = QDir(qdTempDir.absoluteFilePath( XMLFile::GetTmpFolderName("_GUT_RUN", 8) ) );
+
+    // Make a path if we don't have one already.
+    if (!qdGutRunTempDir.exists()){
+      qdGutRunTempDir.mkpath(".");
+    }
+    else{
+        throw GutException(PATH_ERROR, QString("Temp folder collision: %1").arg(qdGutRunTempDir.absolutePath()) );
+    }
 }
 
 void GutRun::InitCheck(){
@@ -51,8 +59,9 @@ GutRun::GutRun()
     m_XML_Inputs = NULL;
 }
 
-void GutRun::Run()
+void GutRun::Run(const char * psXMLInput)
 {
+    Init(psXMLInput);
     InitCheck(); // Make sure this singleton class has been initialized properly.
     LoadSourceRasters();
     CreateUnits();
@@ -202,9 +211,18 @@ GutRaster * GutRun::GetCreateRaster(RasterType eRasterType, RMOperation rmOperat
 
 GutRun::~GutRun()
 {
+    qDebug()<< "DESTRUCTOR";
+
+    // Clean up the TMP folder if it is needed
+    // We're deletign a folder here so we need some sanity checks so there's
+    // No chance of deleting someone's root folder.
+    if (qdGutRunTempDir.exists() && qdGutRunTempDir.absolutePath().length() > 10){
+        if (!qdGutRunTempDir.removeRecursively()){
+            throw GutException(PATH_ERROR, QString("Error removing path: %1").arg(qdGutRunTempDir.absolutePath()) );
+        }
+    }
 
     qDeleteAll(m_RasterStore);
-
 
     if (m_XML_Inputs != NULL)
         delete m_XML_Inputs;
@@ -212,9 +230,6 @@ GutRun::~GutRun()
         delete m_XML_Logs;
     if (m_XML_Results != NULL)
         delete m_XML_Results;
-
 }
-
-
 
 }
