@@ -65,6 +65,7 @@ void GutRun::Run(const char * psXMLInput)
     InitCheck(); // Make sure this singleton class has been initialized properly.
     LoadSourceRasters();
     CreateUnits();
+
     CombineUnits();
     ClassifyUnits();
 }
@@ -84,13 +85,12 @@ void GutRun::ClassifyUnits(){
 void GutRun::LoadSourceRasters(){
 
     // Kick-Start the process with the original 4 Rasters we can't derive.
-    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("dem") ) );
-    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("waterextent") ) );
-    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("bankfull") ) );
-    m_RasterStore.push_back(new GutRaster(GetSourceRasterPath("detrended") ) );
+    m_RasterStore.push_back(new GutRaster( GetSourceRasterPath("dem"),         RM_DEM ) );
+    m_RasterStore.push_back(new GutRaster( GetSourceRasterPath("waterextent"), RM_WATEREXTENT) );
+    m_RasterStore.push_back(new GutRaster( GetSourceRasterPath("bankfull"),    RM_BANKFULL) );
+    m_RasterStore.push_back(new GutRaster( GetSourceRasterPath("detrended"),   RM_DETRENDED) );
 
 }
-
 
 QString GutRun::GetInputParamText(QString containerName, QString tagName){
 
@@ -183,38 +183,10 @@ QString GutRun::BaseFileNameAppend(QString sFullFilePath, QString sAppendStr){
     return newPath;
 }
 
-GutRaster * GutRun::GetCreateRaster(RasterType eRasterType, RMOperation rmOperation)
-{
-    bool bFound = false;
-    GutRaster * theRaster;
-    foreach(GutRaster * gRaster, m_RasterStore)
-    {
-        if (gRaster->GetType() == eRasterType &&
-                *gRaster->GetRMOperation() == rmOperation){
-            theRaster = gRaster;
-            bFound = true;
-            break;
-        }
-    }
-
-    // If not found then we make it.
-    if (!bFound){
-        theRaster = new GutRaster(eRasterType, rmOperation);
-
-        // The farther down the process we are the least general re-use there should be
-        // so "push_back" is the right choice.
-        m_RasterStore.push_back(theRaster);
-    }
-
-    return theRaster;
-}
-
 GutRun::~GutRun()
 {
-    qDebug()<< "DESTRUCTOR";
-
     // Clean up the TMP folder if it is needed
-    // We're deletign a folder here so we need some sanity checks so there's
+    // We're deleting a folder here so we need some sanity checks so there's
     // No chance of deleting someone's root folder.
     if (qdGutRunTempDir.exists() && qdGutRunTempDir.absolutePath().length() > 10){
         if (!qdGutRunTempDir.removeRecursively()){
@@ -223,6 +195,7 @@ GutRun::~GutRun()
     }
 
     qDeleteAll(m_RasterStore);
+    qDeleteAll(m_UnitStore);
 
     if (m_XML_Inputs != NULL)
         delete m_XML_Inputs;

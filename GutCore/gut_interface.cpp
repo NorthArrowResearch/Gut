@@ -1,6 +1,7 @@
 #define MY_DLL_EXPORT
 
 #include "gut_run.h"
+#include "gut_raster.h"
 #include "gut_interface.h"
 #include "gut_exception.h"
 #include "gut_global.h"

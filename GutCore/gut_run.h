@@ -6,14 +6,13 @@
 #include <QDir>
 #include <QFile>
 #include <QTime>
-#include "gut_raster.h"
 #include <QString>
+#include "gut_raster.h"
 #include "xmlfile.h"
 #include "unit.h"
 #include "unit_hsuplfan.h"
 
 namespace Gut{
-
 
 class DLL_API GutRun{
 public:
@@ -30,12 +29,8 @@ public:
     */
    void Run(const char *psXMLInput);
 
-   /**
-    * @brief GetRaster
-    * @param eRasterType
-    * @return
-    */
-   GutRaster * GetCreateRaster(RasterType eRasterType, RMOperation rmOperation);
+   inline QList<GutRaster *> * GetRasterStore(){ return &m_RasterStore; }
+   inline void PushRasterStore(GutRaster * theRaster){ m_RasterStore.push_back(theRaster); }
 
    // Some getters and setters
    /**
